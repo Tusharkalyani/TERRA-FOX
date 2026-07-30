@@ -1,4 +1,3 @@
-import React from "react";
 import type { CampusNode } from "../data/campusData";
 import { 
   Coffee, 
@@ -23,7 +22,7 @@ export interface CategoryInfo {
   ringClass: string;
   badgeBg: string;
   iconSvg: string;
-  IconComponent: React.ElementType;
+  IconComponent: any;
 }
 
 export function getBuildingCategoryInfo(node: CampusNode): CategoryInfo {

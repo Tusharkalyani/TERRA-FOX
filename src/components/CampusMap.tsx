@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Polyline, Popup, ZoomControl, useMap } from "react-leaflet";
 import L from "leaflet";
+import { Locate, Navigation } from "lucide-react";
 import { campusNodes } from "../data/campusData";
 import type { CampusNode } from "../data/campusData";
 import type { PathResult } from "../utils/pathfinder";
@@ -12,7 +13,10 @@ interface CampusMapProps {
   selectedBuilding: CampusNode | null;
   route: PathResult | null;
   onMarkerClick: (node: CampusNode) => void;
+  onView3D: (node: CampusNode) => void;
   isDarkMode: boolean;
+  userLocation: [number, number] | null;
+  onLocationFound: (coords: [number, number], isMock: boolean) => void;
 }
 
 // Controller component to dynamically animate map center updates
@@ -31,7 +35,78 @@ const MapController: React.FC<{ focusCoords: [number, number] | null }> = ({ foc
   return null;
 };
 
-// Generates custom vector HTML/SVG markers with distinct building type icons & short ID labels
+// Sub-component to manage panning map viewport to GPS location
+interface GPSButtonProps {
+  userLocation: [number, number] | null;
+  onLocationFound: (coords: [number, number], isMock: boolean) => void;
+}
+
+const FindMyLocationButton: React.FC<GPSButtonProps> = ({ onLocationFound }) => {
+  const map = useMap();
+
+  const handleLocate = () => {
+    if (!navigator.geolocation) {
+      triggerFallback();
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        onLocationFound([latitude, longitude], false);
+        map.flyTo([latitude, longitude], 18, {
+          animate: true,
+          duration: 1.5
+        });
+      },
+      (error) => {
+        console.warn("Geolocation error:", error);
+        triggerFallback();
+      },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    );
+  };
+
+  const triggerFallback = () => {
+    // Default fallback coordinates near library/campus spine
+    const mockCoords: [number, number] = [23.075670, 76.854422];
+    onLocationFound(mockCoords, true);
+    map.flyTo(mockCoords, 18, {
+      animate: true,
+      duration: 1.5
+    });
+  };
+
+  return (
+    <button
+      onClick={handleLocate}
+      className="absolute bottom-24 right-5 z-[1000] glass-panel w-10 h-10 rounded-full shadow-lg border border-white/20 text-slate-800 dark:text-slate-100 flex items-center justify-center hover:scale-105 active:scale-95 transition-all pointer-events-auto cursor-pointer"
+      title="Find My Location (GPS)"
+    >
+      <Locate className="w-5 h-5 text-blue-500 dark:text-blue-400" />
+    </button>
+  );
+};
+
+// Pulse location marker for GPS User "You Are Here" dot
+const createUserLocationMarkerIcon = () => {
+  const html = `
+    <div class="relative flex items-center justify-center w-7 h-7">
+      <div class="absolute w-full h-full rounded-full bg-blue-500 gps-pulse-ring"></div>
+      <div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-white shadow-md z-10 flex items-center justify-center text-white text-[8px] font-black">
+        📍
+      </div>
+    </div>
+  `;
+  return L.divIcon({
+    html,
+    className: "gps-location-marker",
+    iconSize: [28, 28],
+    iconAnchor: [14, 14]
+  });
+};
+
+// Generates custom vector HTML/SVG markers with category icons & short ID labels
 const createCustomMarkerIcon = (
   node: CampusNode,
   isStart: boolean,
@@ -85,14 +160,16 @@ const createCustomMarkerIcon = (
   });
 };
 
-
 export const CampusMap: React.FC<CampusMapProps> = ({
   startId,
   endId,
   selectedBuilding,
   route,
   onMarkerClick,
-  isDarkMode
+  onView3D,
+  isDarkMode,
+  userLocation,
+  onLocationFound
 }) => {
   // Center of campus (Main Library coords)
   const defaultCenter: [number, number] = [23.075670, 76.854422];
@@ -102,12 +179,11 @@ export const CampusMap: React.FC<CampusMapProps> = ({
   const northEast = L.latLng(23.08697, 76.86577);
   const bounds = L.latLngBounds(southWest, northEast);
 
-  // Determine dynamic target coordinate to fly to
+  // Dynamic targeting coordinates
   let targetCoords: [number, number] | null = null;
   if (selectedBuilding) {
     targetCoords = [selectedBuilding.lat, selectedBuilding.lng];
   } else if (route && route.coordinates.length > 0) {
-    // If routing but no specific building selected, let's fit the map or center around path
     const midIndex = Math.floor(route.coordinates.length / 2);
     targetCoords = route.coordinates[midIndex];
   }
@@ -118,7 +194,6 @@ export const CampusMap: React.FC<CampusMapProps> = ({
     : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
 
   const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
-
   const buildings = campusNodes.filter((node) => node.isBuilding);
 
   return (
@@ -126,18 +201,32 @@ export const CampusMap: React.FC<CampusMapProps> = ({
       <MapContainer
         center={defaultCenter}
         zoom={17}
-        minZoom={16}
+        minZoom={15}
         maxZoom={19}
         maxBounds={bounds}
         maxBoundsViscosity={1.0}
-        zoomControl={false} // Disable default top-left control to position it elegantly on the bottom-right
+        zoomControl={false}
         className="w-full h-full"
       >
         <TileLayer url={tileUrl} attribution={attribution} />
         <ZoomControl position="bottomright" />
-
+        
         {/* Dynamic Map panning controller */}
         <MapController focusCoords={targetCoords} />
+
+        {/* GPS location overlay button */}
+        <FindMyLocationButton userLocation={userLocation} onLocationFound={onLocationFound} />
+
+        {/* Pulsing User GPS Marker */}
+        {userLocation && (
+          <Marker position={userLocation} icon={createUserLocationMarkerIcon()}>
+            <Popup className="custom-popup rounded-2xl overflow-hidden">
+              <div className="p-2 text-slate-800 dark:text-slate-100 font-bold text-xs text-center">
+                📍 My Location (GPS Active)
+              </div>
+            </Popup>
+          </Marker>
+        )}
 
         {/* Building Markers */}
         {buildings.map((node) => {
@@ -169,10 +258,36 @@ export const CampusMap: React.FC<CampusMapProps> = ({
                     {node.name}
                   </h3>
                   {node.description && (
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed mb-2">
                       {node.description}
                     </p>
                   )}
+
+                  <div className="flex flex-col gap-1.5 mt-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onMarkerClick(node);
+                      }}
+                      className="w-full py-1.5 px-3 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/30 cursor-pointer"
+                    >
+                      <Navigation className="w-3 h-3 fill-current rotate-45" />
+                      Route Here from My Location
+                    </button>
+
+                    {node.id === "AB1" && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onView3D(node);
+                        }}
+                        className="w-full py-1.5 px-3 bg-slate-800 hover:bg-slate-900 text-white text-[10px] font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        View 3D Structure
+                      </button>
+                    )}
+                  </div>
                 </div>
               </Popup>
             </Marker>
@@ -204,11 +319,6 @@ export const CampusMap: React.FC<CampusMapProps> = ({
           </>
         )}
       </MapContainer>
-
-      {/* Elegant re-positioned zoom controls on bottom right */}
-      <div className="absolute bottom-5 right-5 z-[1000] leaflet-bar border-none shadow-none">
-        {/* React Leaflet renders zoom controls inside MapContainer. We styled it using custom CSS in index.css */}
-      </div>
     </div>
   );
 };

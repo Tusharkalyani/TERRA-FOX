@@ -3,6 +3,9 @@ export interface CampusNode {
   name: string;
   lat: number;
   lng: number;
+  alt?: number;
+  floor?: number;
+  buildingId?: string;
   isBuilding: boolean;
   description?: string;
 }
