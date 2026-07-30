@@ -106,7 +106,7 @@ const createUserLocationMarkerIcon = () => {
   });
 };
 
-// Generates custom vector HTML/SVG markers with category icons & short ID labels
+// Generates custom vector HTML/SVG markers matching screenshot (Icon + Full Building Name Pill)
 const createCustomMarkerIcon = (
   node: CampusNode,
   isStart: boolean,
@@ -115,39 +115,37 @@ const createCustomMarkerIcon = (
 ) => {
   const category = getBuildingCategoryInfo(node);
 
-  let pinBgClass = category.defaultPinBg;
-  let ringClass = category.ringClass;
+  let badgeBg = "bg-slate-950/85 text-white border-white/20 shadow-2xl backdrop-blur-md";
+  let iconContainerBg = category.defaultPinBg;
   let animateClass = "";
   let badgeLabel = "";
 
   if (isStart) {
-    pinBgClass = "bg-emerald-500 text-white border-white shadow-emerald-500/50 scale-110";
-    ringClass = "border-emerald-400";
+    iconContainerBg = "bg-emerald-500 text-white border-white shadow-emerald-500/50 scale-105";
+    badgeBg = "bg-emerald-950/90 text-white border-emerald-400 shadow-emerald-500/40 backdrop-blur-md ring-2 ring-emerald-400";
     animateClass = "pulse-marker";
-    badgeLabel = `<span class="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 bg-emerald-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center border-2 border-white shadow-md z-10">A</span>`;
+    badgeLabel = `<span class="w-4 h-4 bg-emerald-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border border-white shrink-0">A</span>`;
   } else if (isEnd) {
-    pinBgClass = "bg-rose-500 text-white border-white shadow-rose-500/50 scale-110";
-    ringClass = "border-rose-400";
+    iconContainerBg = "bg-rose-500 text-white border-white shadow-rose-500/50 scale-105";
+    badgeBg = "bg-rose-950/90 text-white border-rose-400 shadow-rose-500/40 backdrop-blur-md ring-2 ring-rose-400";
     animateClass = "pulse-marker";
-    badgeLabel = `<span class="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 bg-rose-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center border-2 border-white shadow-md z-10">B</span>`;
+    badgeLabel = `<span class="w-4 h-4 bg-rose-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border border-white shrink-0">B</span>`;
   } else if (isSelected) {
-    pinBgClass = "bg-blue-600 text-white border-white shadow-blue-600/50 scale-110";
-    ringClass = "border-blue-400";
+    badgeBg = "bg-blue-950/95 text-white border-blue-400 shadow-blue-500/50 backdrop-blur-md ring-2 ring-blue-400 scale-105";
     animateClass = "pulse-marker";
   }
 
   const html = `
-    <div class="relative flex flex-col items-center justify-center group cursor-pointer">
-      ${animateClass ? `<div class="absolute -inset-2 rounded-full border-2 ${ringClass} ${animateClass} opacity-60"></div>` : ""}
-      ${badgeLabel}
-      <div class="w-9 h-9 rounded-2xl flex items-center justify-center shadow-xl border-2 transition-all duration-300 transform group-hover:scale-115 ${pinBgClass}">
-        ${category.iconSvg}
-      </div>
-      <div class="w-2 h-2 -mt-1 rotate-45 border-r border-b bg-current border-current shadow-sm opacity-80"></div>
-
-      <!-- Visible short ID badge under node pin -->
-      <div class="mt-0.5 px-1.5 py-0.5 rounded-md bg-slate-900/85 dark:bg-slate-950/90 text-white text-[9px] font-black tracking-wider border border-white/20 shadow-md backdrop-blur-sm whitespace-nowrap transition-transform duration-200 group-hover:scale-105 pointer-events-none">
-        ${node.id}
+    <div class="relative flex items-center justify-start group cursor-pointer pointer-events-auto">
+      ${animateClass ? `<div class="absolute -inset-1.5 rounded-full border-2 border-blue-400 ${animateClass} opacity-60"></div>` : ""}
+      <div class="flex items-center gap-1.5 px-2 py-1 rounded-2xl ${badgeBg} border transition-all duration-300 transform group-hover:scale-108 whitespace-nowrap shadow-2xl">
+        ${badgeLabel}
+        <div class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shadow-md border border-white/40 shrink-0 ${iconContainerBg}">
+          ${category.iconSvg}
+        </div>
+        <span class="font-extrabold text-[11px] text-white tracking-tight drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.9)] pr-1">
+          ${node.name}
+        </span>
       </div>
     </div>
   `;
@@ -155,8 +153,8 @@ const createCustomMarkerIcon = (
   return L.divIcon({
     html,
     className: "custom-map-marker",
-    iconSize: [64, 64],
-    iconAnchor: [32, 38]
+    iconSize: [220, 36],
+    iconAnchor: [20, 18]
   });
 };
 
@@ -171,6 +169,9 @@ export const CampusMap: React.FC<CampusMapProps> = ({
   userLocation,
   onLocationFound
 }) => {
+  // Default to Satellite mode matching the screenshot!
+  const [mapStyle, setMapStyle] = React.useState<"standard" | "satellite" | "hybrid">("satellite");
+
   // Center of campus (Main Library coords)
   const defaultCenter: [number, number] = [23.075670, 76.854422];
 
@@ -188,10 +189,13 @@ export const CampusMap: React.FC<CampusMapProps> = ({
     targetCoords = route.coordinates[midIndex];
   }
 
-  // CartoDB Tile URLs (minimalist map styles)
-  const tileUrl = isDarkMode
+  // Apple Maps aesthetic tile providers (Carto Voyager for Vector, Esri for Satellite)
+  const vectorTileUrl = isDarkMode
     ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-    : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+    : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+
+  const satelliteTileUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+  const labelsOverlayUrl = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png";
 
   const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
   const buildings = campusNodes.filter((node) => node.isBuilding);
@@ -208,27 +212,84 @@ export const CampusMap: React.FC<CampusMapProps> = ({
         zoomControl={false}
         className="w-full h-full"
       >
-        <TileLayer url={tileUrl} attribution={attribution} />
+        {/* Apple Maps Vector Tiles */}
+        {mapStyle === "standard" && (
+          <TileLayer url={vectorTileUrl} attribution={attribution} />
+        )}
+
+        {/* Satellite View */}
+        {mapStyle === "satellite" && (
+          <TileLayer url={satelliteTileUrl} attribution="&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community" />
+        )}
+
+        {/* Hybrid View (Satellite + Apple Labels) */}
+        {mapStyle === "hybrid" && (
+          <>
+            <TileLayer url={satelliteTileUrl} attribution="&copy; Esri &mdash; Imagery" />
+            <TileLayer url={labelsOverlayUrl} attribution="&copy; CARTO" />
+          </>
+        )}
+
         <ZoomControl position="bottomright" />
         
         {/* Dynamic Map panning controller */}
         <MapController focusCoords={targetCoords} />
 
-        {/* GPS location overlay button */}
-        <FindMyLocationButton userLocation={userLocation} onLocationFound={onLocationFound} />
+        {/* Floating Apple Maps Controls (Bottom Right) */}
+        <div className="leaflet-bottom leaflet-right !bottom-6 !right-6 z-[1000] flex flex-col gap-2 pointer-events-auto items-end">
+          {/* Apple Maps Style Switcher Pill */}
+          <div className="glass-panel p-1 rounded-2xl shadow-2xl border border-white/20 flex items-center gap-1 text-[10px] font-extrabold backdrop-blur-xl">
+            <button
+              onClick={() => setMapStyle("satellite")}
+              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                mapStyle === "satellite"
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
+              }`}
+            >
+              🛰️ Satellite
+            </button>
+            <button
+              onClick={() => setMapStyle("hybrid")}
+              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                mapStyle === "hybrid"
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
+              }`}
+            >
+              🏙️ Hybrid
+            </button>
+            <button
+              onClick={() => setMapStyle("standard")}
+              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                mapStyle === "standard"
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
+              }`}
+            >
+              🗺️ Map
+            </button>
+          </div>
+
+          {/* Location & Recenter Control */}
+          <FindMyLocationButton userLocation={userLocation} onLocationFound={onLocationFound} />
+        </div>
 
         {/* Pulsing User GPS Marker */}
         {userLocation && (
-          <Marker position={userLocation} icon={createUserLocationMarkerIcon()}>
+          <Marker
+            position={userLocation}
+            icon={createUserLocationMarkerIcon()}
+          >
             <Popup className="custom-popup rounded-2xl overflow-hidden">
-              <div className="p-2 text-slate-800 dark:text-slate-100 font-bold text-xs text-center">
-                📍 My Location (GPS Active)
+              <div className="p-2 text-center text-xs font-bold">
+                📍 You are here (My Location)
               </div>
             </Popup>
           </Marker>
         )}
 
-        {/* Building Markers */}
+        {/* Building Markers matching screenshot */}
         {buildings.map((node) => {
           const isStart = node.id === startId;
           const isEnd = node.id === endId;
@@ -294,56 +355,44 @@ export const CampusMap: React.FC<CampusMapProps> = ({
           );
         })}
 
-        {/* Realistic Paved Campus Road Overlay */}
+        {/* Realistic Paved Pink/Coral Road Line matching screenshot */}
         {route && (
           <>
-            {/* Ambient Blue Road Glow Aura */}
+            {/* Pink Outer Glow Aura */}
             <Polyline
               positions={route.coordinates}
               pathOptions={{
-                color: isDarkMode ? "#3b82f6" : "#2563eb",
-                weight: 24,
-                opacity: 0.25,
+                color: "#f43f5e",
+                weight: 14,
+                opacity: 0.35,
                 lineCap: "round",
                 lineJoin: "round"
               }}
             />
 
-            {/* Road Asphalt Curb / Edge Outline */}
+            {/* Main Coral Pink Road Line matching screenshot */}
             <Polyline
               positions={route.coordinates}
               pathOptions={{
-                color: isDarkMode ? "#090d16" : "#0f172a",
-                weight: 16,
-                opacity: 0.95,
-                lineCap: "round",
-                lineJoin: "round"
-              }}
-            />
-
-            {/* Paved Road Surface (Asphalt Grey) */}
-            <Polyline
-              positions={route.coordinates}
-              pathOptions={{
-                color: isDarkMode ? "#1e293b" : "#334155",
-                weight: 11,
-                opacity: 0.95,
-                lineCap: "round",
-                lineJoin: "round"
-              }}
-            />
-
-            {/* Center Lane Animated Yellow Highway Dash Divider */}
-            <Polyline
-              positions={route.coordinates}
-              pathOptions={{
-                color: isDarkMode ? "#facc15" : "#fbbf24",
-                weight: 2.5,
+                color: "#ff4757",
+                weight: 5,
                 opacity: 0.95,
                 lineCap: "round",
                 lineJoin: "round"
               }}
               className="route-polyline"
+            />
+
+            {/* Inner White Road Core */}
+            <Polyline
+              positions={route.coordinates}
+              pathOptions={{
+                color: "#ffe4e6",
+                weight: 2,
+                opacity: 0.9,
+                lineCap: "round",
+                lineJoin: "round"
+              }}
             />
           </>
         )}
