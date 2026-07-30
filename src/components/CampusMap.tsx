@@ -217,37 +217,16 @@ export const CampusMap: React.FC<CampusMapProps> = ({
         {/* GPS location overlay button */}
         <FindMyLocationButton userLocation={userLocation} onLocationFound={onLocationFound} />
 
-        {/* Pulsing & Draggable User GPS Location Marker */}
+        {/* Pulsing User GPS Marker */}
         {userLocation && (
-          <Marker 
-            position={userLocation} 
-            icon={createUserLocationMarkerIcon()}
-            draggable={true}
-            eventHandlers={{
-              dragend: (e) => {
-                const marker = e.target;
-                const position = marker.getLatLng();
-                onLocationFound([position.lat, position.lng], false);
-              }
-            }}
-          >
-            <Popup className="custom-popup rounded-2xl overflow-hidden shadow-2xl">
-              <div className="p-3 text-slate-800 dark:text-slate-100 font-bold text-xs text-center flex flex-col items-center gap-1">
-                <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-extrabold">
-                  <Locate className="w-4 h-4 animate-pulse" />
-                  <span>My Live Location</span>
-                </div>
-                <span className="text-[10px] font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
-                  {userLocation[0].toFixed(5)}, {userLocation[1].toFixed(5)}
-                </span>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-1">
-                  🖐️ Drag this pin anywhere on the map to correct your live location!
-                </p>
+          <Marker position={userLocation} icon={createUserLocationMarkerIcon()}>
+            <Popup className="custom-popup rounded-2xl overflow-hidden">
+              <div className="p-2 text-slate-800 dark:text-slate-100 font-bold text-xs text-center">
+                📍 My Location (GPS Active)
               </div>
             </Popup>
           </Marker>
         )}
-
 
         {/* Building Markers */}
         {buildings.map((node) => {
@@ -315,30 +294,60 @@ export const CampusMap: React.FC<CampusMapProps> = ({
           );
         })}
 
-        {/* Path route line */}
+        {/* Realistic Paved Campus Road Overlay */}
         {route && (
           <>
-            {/* Outline Glow */}
+            {/* Ambient Blue Road Glow Aura */}
             <Polyline
               positions={route.coordinates}
               pathOptions={{
                 color: isDarkMode ? "#3b82f6" : "#2563eb",
-                weight: 8,
-                opacity: 0.15
+                weight: 24,
+                opacity: 0.25,
+                lineCap: "round",
+                lineJoin: "round"
               }}
             />
-            {/* Main Styled Line */}
+
+            {/* Road Asphalt Curb / Edge Outline */}
             <Polyline
               positions={route.coordinates}
               pathOptions={{
-                color: isDarkMode ? "#60a5fa" : "#3b82f6",
-                weight: 5,
-                opacity: 0.95
+                color: isDarkMode ? "#090d16" : "#0f172a",
+                weight: 16,
+                opacity: 0.95,
+                lineCap: "round",
+                lineJoin: "round"
+              }}
+            />
+
+            {/* Paved Road Surface (Asphalt Grey) */}
+            <Polyline
+              positions={route.coordinates}
+              pathOptions={{
+                color: isDarkMode ? "#1e293b" : "#334155",
+                weight: 11,
+                opacity: 0.95,
+                lineCap: "round",
+                lineJoin: "round"
+              }}
+            />
+
+            {/* Center Lane Animated Yellow Highway Dash Divider */}
+            <Polyline
+              positions={route.coordinates}
+              pathOptions={{
+                color: isDarkMode ? "#facc15" : "#fbbf24",
+                weight: 2.5,
+                opacity: 0.95,
+                lineCap: "round",
+                lineJoin: "round"
               }}
               className="route-polyline"
             />
           </>
         )}
+
       </MapContainer>
     </div>
   );

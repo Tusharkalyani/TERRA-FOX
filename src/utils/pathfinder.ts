@@ -125,22 +125,26 @@ export function generateTurnByTurnSteps(path: CampusNode[]): NavigationStep[] {
     let turnType: NavigationStep["type"] = "straight";
     let turnAction = "Continue straight";
 
+    const roadLabel = curr.name ? `at ${curr.name}` : "onto Campus Road";
+
     if (turnAngle >= 30 && turnAngle < 150) {
       turnType = "turn-right";
-      turnAction = "Turn right";
+      turnAction = `Turn right ${roadLabel}`;
     } else if (turnAngle >= 150 && turnAngle < 210) {
       turnType = "u-turn";
-      turnAction = "Make a U-turn";
+      turnAction = `Make a U-turn ${roadLabel}`;
     } else if (turnAngle >= 210 && turnAngle < 330) {
       turnType = "turn-left";
-      turnAction = "Turn left";
+      turnAction = `Turn left ${roadLabel}`;
+    } else {
+      turnAction = curr.name ? `Continue past ${curr.name}` : "Continue along Campus Road";
     }
 
     steps.push({
       type: turnType,
-      instruction: `${turnAction} at ${curr.name}`,
+      instruction: turnAction,
       distance: distToNext,
-      nodeName: curr.name
+      nodeName: curr.name || "Campus Road"
     });
   }
 
@@ -155,6 +159,7 @@ export function generateTurnByTurnSteps(path: CampusNode[]): NavigationStep[] {
 
   return steps;
 }
+
 
 /**
  * Runs 2D/3D A* Pathfinding Algorithm with dynamic user location binding
