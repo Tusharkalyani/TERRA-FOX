@@ -246,6 +246,7 @@ export const roadNodes: CampusNode[] = [
   { id: "N6",  name: "", lat: 23.07724684085598,  lng: 76.8507575457329,  isBuilding: false },
   { id: "N7",  name: "", lat: 23.077023581805406, lng: 76.85078133776051, isBuilding: false },
   { id: "N8",  name: "", lat: 23.07709362390039,  lng: 76.85126193671786, isBuilding: false },
+  { id: "N48", name: "", lat: 23.077920993386662, lng: 76.85063382718943, isBuilding: false },
 
   // Architecture & Lab Zone
   { id: "N9",  name: "", lat: 23.07898907408047,  lng: 76.8505204515349,  isBuilding: false },
@@ -298,7 +299,35 @@ export const roadNodes: CampusNode[] = [
   { id: "N42", name: "", lat: 23.074867453347775, lng: 76.86000246352658, isBuilding: false },
   { id: "N43", name: "", lat: 23.07335841005969,  lng: 76.85838389845556, isBuilding: false },
   { id: "N44", name: "", lat: 23.07372783610921,  lng: 76.8583964070395,  isBuilding: false },
-  { id: "N45", name: "", lat: 23.073616058997267, lng: 76.85983932710948, isBuilding: false }
+  { id: "N45", name: "", lat: 23.073616058997267, lng: 76.85983932710948, isBuilding: false },
+
+  // South-East Loop & Connectors
+  { id: "N50", name: "", lat: 23.07507709261666,  lng: 76.85613788204161, isBuilding: false },
+  { id: "N51", name: "", lat: 23.074929784352292, lng: 76.85849257274243, isBuilding: false },
+  { id: "N52", name: "", lat: 23.074268722352016, lng: 76.85494235031398, isBuilding: false },
+  { id: "N53", name: "", lat: 23.07313991522111,  lng: 76.85494419732102, isBuilding: false },
+  { id: "N54", name: "", lat: 23.073089802204684, lng: 76.85518386683312, isBuilding: false },
+  { id: "N55", name: "", lat: 23.07306975699289,  lng: 76.85533638379538, isBuilding: false },
+  { id: "N56", name: "", lat: 23.073049711778097, lng: 76.85575035840722, isBuilding: false },
+  { id: "N57", name: "", lat: 23.07298957611583,  lng: 76.85619701522525, isBuilding: false },
+  { id: "N58", name: "", lat: 23.072809168967673, lng: 76.85619701522525, isBuilding: false },
+  { id: "N59", name: "", lat: 23.07260871629703,  lng: 76.85621880336271, isBuilding: false },
+  { id: "N60", name: "", lat: 23.072648523820604, lng: 76.85643829481978, isBuilding: false },
+  { id: "N61", name: "", lat: 23.07267997746614,  lng: 76.85674599065173, isBuilding: false },
+  { id: "N62", name: "", lat: 23.072795307436856, lng: 76.8571106671933,  isBuilding: false },
+  { id: "N63", name: "", lat: 23.07279994029832,  lng: 76.85722591001532, isBuilding: false },
+  { id: "N64", name: "", lat: 23.07283954955949,  lng: 76.85737659618844, isBuilding: false },
+  { id: "N65", name: "", lat: 23.072928670354457, lng: 76.85767796853472, isBuilding: false },
+  { id: "N66", name: "", lat: 23.07297818188171,  lng: 76.85783941800592, isBuilding: false },
+  { id: "N67", name: "", lat: 23.073067344482435, lng: 76.858076129976,   isBuilding: false },
+  { id: "N68", name: "", lat: 23.073097050140984, lng: 76.85824833561861, isBuilding: false },
+  { id: "N69", name: "", lat: 23.073126755792966, lng: 76.85835596414528, isBuilding: false },
+  { id: "N70", name: "", lat: 23.073909002267573, lng: 76.85842054126125, isBuilding: false },
+  { id: "N71", name: "", lat: 23.074770458311082, lng: 76.85849588122991, isBuilding: false },
+  { id: "N72", name: "", lat: 23.07293861988623,  lng: 76.85835596414528, isBuilding: false },
+  { id: "N73", name: "", lat: 23.0749387881579,   lng: 76.85680611336156, isBuilding: false },
+  { id: "N74", name: "", lat: 23.07489808958703,  lng: 76.85843996840121, isBuilding: false },
+  { id: "N75", name: "", lat: 23.074954430477604, lng: 76.85679961223389, isBuilding: false }
 ];
 
 export const campusNodes: CampusNode[] = [...buildings, ...roadNodes];
@@ -325,8 +354,8 @@ export const campusEdges: CampusEdge[] = [
   { from: "GH1", to: "N23" },
   { from: "GH2", to: "N25" },
   { from: "GH2", to: "N26" },
-  { from: "SPECIAL", to: "N36" },
-  { from: "SPECIAL", to: "N37" },
+  { from: "SPECIAL", to: "N64" },
+  { from: "SPECIAL", to: "N65" },
   { from: "AB2", to: "N27" },
   { from: "AB2", to: "N28" },
   { from: "AB2", to: "N47" },
@@ -361,7 +390,8 @@ export const campusEdges: CampusEdge[] = [
   { from: "N12", to: "N1" },
   { from: "N1", to: "N2" },
   { from: "N2", to: "N3" },
-  { from: "N3", to: "N4" },
+  { from: "N3", to: "N48" },
+  { from: "N48", to: "N4" },
   { from: "N4", to: "N5" },
   { from: "N5", to: "N6" },
   { from: "N6", to: "N7" },
@@ -396,11 +426,39 @@ export const campusEdges: CampusEdge[] = [
   { from: "N27", to: "N28" },
   { from: "N47", to: "N29" },
   { from: "N29", to: "N30" },
+  { from: "N28", to: "N52" },
+  { from: "N52", to: "N53" },
+  { from: "N53", to: "N54" },
+  { from: "N54", to: "N55" },
+  { from: "N55", to: "N56" },
+  { from: "N56", to: "N57" },
+  { from: "N57", to: "N58" },
+  { from: "N58", to: "N59" },
+  { from: "N59", to: "N60" },
+  { from: "N60", to: "N61" },
+  { from: "N61", to: "N62" },
+  { from: "N62", to: "N63" },
+  { from: "N63", to: "N64" },
+  { from: "N64", to: "N65" },
+  { from: "N65", to: "N66" },
+  { from: "N66", to: "N67" },
+  { from: "N67", to: "N68" },
+  { from: "N68", to: "N69" },
+  { from: "N69", to: "N72" },
+  { from: "N72", to: "N35" },
+  { from: "N69", to: "N70" },
+  { from: "N70", to: "N71" },
 
   // East Campus Highway
-  { from: "N22", to: "N30" },
+  { from: "N22", to: "N73" },
+  { from: "N73", to: "N75" },
+  { from: "N75", to: "N50" },
+  { from: "N50", to: "N30" },
   { from: "N30", to: "N31" },
-  { from: "N31", to: "N32" },
+  { from: "N31", to: "N51" },
+  { from: "N51", to: "N74" },
+  { from: "N74", to: "N71" },
+  { from: "N71", to: "N32" },
   { from: "N32", to: "N33" },
 
   // Boys Hostel Ring Road
@@ -420,6 +478,7 @@ export const campusEdges: CampusEdge[] = [
   { from: "N40", to: "N31" },
   { from: "N39", to: "N44" }
 ];
+
 
 
 
