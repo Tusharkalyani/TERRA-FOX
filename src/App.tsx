@@ -5,6 +5,7 @@ import { findShortestPath } from "./utils/pathfinder";
 import type { PathResult } from "./utils/pathfinder";
 import type { CampusNode } from "./data/campusData";
 import { Sun, Moon } from "lucide-react";
+import { WeatherWidget } from "./components/WeatherWidget";
 
 function App() {
   const [startId, setStartId] = useState<string>("AB1"); // Default start at Academic Block 1
@@ -90,8 +91,9 @@ function App() {
 
       {/* Floating UI Elements Overlay */}
       <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-4 sm:p-6">
-        {/* Top bar (with dark mode switch) */}
-        <div className="w-full flex justify-end pointer-events-auto">
+        {/* Top bar (with weather and dark mode switch) */}
+        <div className="w-full flex justify-end items-center gap-3 pointer-events-auto">
+          <WeatherWidget />
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="glass-panel p-3 rounded-2xl shadow-lg border border-white/20 text-slate-800 dark:text-slate-100 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
