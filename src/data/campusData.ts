@@ -235,85 +235,191 @@ export const buildings: CampusNode[] = [
 
 ];
 
-// Road Pathway Junctions following actual campus road network
+// Hidden Road Junction Nodes (Not shown in dropdown)
 export const roadNodes: CampusNode[] = [
-  // West Corridor Road
-  { id: "ROAD_W1", name: "North Lab Road", lat: 23.0786, lng: 76.8501, isBuilding: false },
-  { id: "ROAD_W2", name: "Food Court Road", lat: 23.0776, lng: 76.8505, isBuilding: false },
-  { id: "ROAD_W3", name: "Mayuri Store Pathway", lat: 23.0773, lng: 76.8507, isBuilding: false },
-  { id: "ROAD_W4", name: "Hospital Road", lat: 23.0761, lng: 76.8499, isBuilding: false },
-  { id: "ROAD_W5", name: "Parcel Point Road", lat: 23.0747, lng: 76.8502, isBuilding: false },
+  // Academic Zone
+  { id: "N1",  name: "", lat: 23.077982279812773,  lng: 76.85102877484746, isBuilding: false },
+  { id: "N2",  name: "", lat: 23.077973524610755, lng: 76.85078609616602, isBuilding: false },
+  { id: "N3",  name: "", lat: 23.077907860577437, lng: 76.85062906878392, isBuilding: false },
+  { id: "N4",  name: "", lat: 23.077627693675012, lng: 76.85064334400046, isBuilding: false },
+  { id: "N5",  name: "", lat: 23.07751825332021,  lng: 76.85068141124461, isBuilding: false },
+  { id: "N6",  name: "", lat: 23.07724684085598,  lng: 76.8507575457329,  isBuilding: false },
+  { id: "N7",  name: "", lat: 23.077023581805406, lng: 76.85078133776051, isBuilding: false },
+  { id: "N8",  name: "", lat: 23.07709362390039,  lng: 76.85126193671786, isBuilding: false },
 
-  // Main Central Spine Road
-  { id: "ROAD_C1", name: "West Spine Connector", lat: 23.0748, lng: 76.8516, isBuilding: false },
-  { id: "ROAD_C2", name: "Girls Hostel Quad Road", lat: 23.0751, lng: 76.8531, isBuilding: false },
-  { id: "ROAD_C3", name: "GH2 Pathway", lat: 23.0752, lng: 76.8542, isBuilding: false },
-  { id: "ROAD_C4", name: "Central Academic Avenue", lat: 23.0745, lng: 76.8550, isBuilding: false },
-  { id: "ROAD_C5", name: "AB2 Entrance Road", lat: 23.0738, lng: 76.8558, isBuilding: false },
+  // Architecture & Lab Zone
+  { id: "N9",  name: "", lat: 23.07898907408047,  lng: 76.8505204515349,  isBuilding: false },
+  { id: "N10", name: "", lat: 23.07831122390035,  lng: 76.85059088281884, isBuilding: false },
+  { id: "N11", name: "", lat: 23.07818661871603,  lng: 76.850152041742,   isBuilding: false },
+  { id: "N12", name: "", lat: 23.07803709234243,  lng: 76.85062880735633, isBuilding: false },
 
-  // East Main Highway Connector Road
-  { id: "ROAD_E1", name: "East Campus Highway", lat: 23.0746, lng: 76.8572, isBuilding: false },
-  { id: "ROAD_E2", name: "East Academic Gateway", lat: 23.0750, lng: 76.8586, isBuilding: false },
-  { id: "ROAD_E3", name: "AB1 & Hostel Main Road", lat: 23.0753, lng: 76.8596, isBuilding: false },
+  // Cafeteria Zone
+  { id: "N13", name: "", lat: 23.076863445836267, lng: 76.85010791186787, isBuilding: false },
+  { id: "N14", name: "", lat: 23.076426175724837, lng: 76.8500856320291,  isBuilding: false },
+  { id: "N15", name: "", lat: 23.07561312283181,  lng: 76.85011533848078, isBuilding: false },
+  { id: "N16", name: "", lat: 23.074902551572478, lng: 76.850182177997,   isBuilding: false },
+
+  // Central Spine Road
+  { id: "N17", name: "", lat: 23.07480689746239,  lng: 76.85049409573946, isBuilding: false },
+  { id: "N18", name: "", lat: 23.07468391350661,  lng: 76.85103623848231, isBuilding: false },
+  { id: "N19", name: "", lat: 23.07471124328428,  lng: 76.85157838122515, isBuilding: false },
+  { id: "N20", name: "", lat: 23.074786400144244, lng: 76.85195713848385, isBuilding: false },
+  { id: "N21", name: "", lat: 23.075087027164077, lng: 76.8548238110693,  isBuilding: false },
+  { id: "N22", name: "", lat: 23.074936284239282, lng: 76.85679124306766, isBuilding: false },
+
+  // Girls Hostel Area
+  { id: "N23", name: "", lat: 23.074913123642904, lng: 76.8529165696399,  isBuilding: false },
+  { id: "N24", name: "", lat: 23.074934454931668, lng: 76.85343246606905, isBuilding: false },
+  { id: "N25", name: "", lat: 23.07499844877766,  lng: 76.85426717489824, isBuilding: false },
+  { id: "N26", name: "", lat: 23.07496111903787,  lng: 76.85378605800364, isBuilding: false },
+
+  // AB2 Area
+  { id: "N27", name: "", lat: 23.074287628658354, lng: 76.85494398173988, isBuilding: false },
+  { id: "N28", name: "", lat: 23.073781895994994, lng: 76.85492160920644, isBuilding: false },
+  { id: "N29", name: "", lat: 23.07419070965998,  lng: 76.85646519826791, isBuilding: false },
+  { id: "N46", name: "", lat: 23.074656901866422, lng: 76.85494500060412, isBuilding: false },
+  { id: "N47", name: "", lat: 23.07424808724952,  lng: 76.85563883440965, isBuilding: false },
+
+  // East Campus
+  { id: "N30", name: "", lat: 23.075016770549855, lng: 76.85626514026693, isBuilding: false },
+  { id: "N31", name: "", lat: 23.07494210358325,  lng: 76.85734051537067, isBuilding: false },
+  { id: "N32", name: "", lat: 23.074904770084405, lng: 76.8584767607633,  isBuilding: false },
 
   // Boys Hostel Ring Road
-  { id: "ROAD_BH_N", name: "Hostel North Loop", lat: 23.0745, lng: 76.8595, isBuilding: false },
-  { id: "ROAD_BH_E", name: "Hostel East Loop", lat: 23.0728, lng: 76.8600, isBuilding: false },
-  { id: "ROAD_BH_S", name: "Hostel South Loop", lat: 23.0724, lng: 76.8594, isBuilding: false },
-  { id: "ROAD_BH_W", name: "Hostel West Loop", lat: 23.0727, lng: 76.8587, isBuilding: false }
+  { id: "N33", name: "", lat: 23.07494210358325,  lng: 76.85965358634851, isBuilding: false },
+  { id: "N34", name: "", lat: 23.074447433882458, lng: 76.85846661571514, isBuilding: false },
+  { id: "N35", name: "", lat: 23.072953811742167, lng: 76.85836314793916, isBuilding: false },
+  { id: "N36", name: "", lat: 23.072891079806613, lng: 76.85888306908957, isBuilding: false },
+  { id: "N37", name: "", lat: 23.07289107980566,  lng: 76.85929644904398, isBuilding: false },
+  { id: "N38", name: "", lat: 23.072757774345465, lng: 76.85957771786308, isBuilding: false },
+  { id: "N39", name: "", lat: 23.073933994434118, lng: 76.85842281104532, isBuilding: false },
+  { id: "N40", name: "", lat: 23.074130030115498, lng: 76.85840576445024, isBuilding: false },
+  { id: "N41", name: "", lat: 23.073788927845918, lng: 76.8598675099797,  isBuilding: false },
+  { id: "N42", name: "", lat: 23.074867453347775, lng: 76.86000246352658, isBuilding: false },
+  { id: "N43", name: "", lat: 23.07335841005969,  lng: 76.85838389845556, isBuilding: false },
+  { id: "N44", name: "", lat: 23.07372783610921,  lng: 76.8583964070395,  isBuilding: false },
+  { id: "N45", name: "", lat: 23.073616058997267, lng: 76.85983932710948, isBuilding: false }
 ];
 
 export const campusNodes: CampusNode[] = [...buildings, ...roadNodes];
 
 export const campusEdges: CampusEdge[] = [
-  // Building links to nearest road pathway
-  { from: "LAB", to: "ROAD_W1" },
-  { from: "ARCH", to: "ROAD_W2" },
-  { from: "UNDERBELLY", to: "ROAD_W2" },
-  { from: "MAYURI", to: "ROAD_W3" },
-  { from: "STORE", to: "ROAD_W3" },
-  { from: "MPH", to: "ROAD_W4" },
-  { from: "HOSPITAL", to: "ROAD_W4" },
-  { from: "PARCEL", to: "ROAD_W5" },
-  { from: "GH1", to: "ROAD_C2" },
-  { from: "SPECIAL", to: "ROAD_C2" },
-  { from: "GH2", to: "ROAD_C3" },
-  { from: "AB2", to: "ROAD_C5" },
-  { from: "AB1", to: "ROAD_E3" },
-  { from: "BH1", to: "ROAD_E3" },
-  { from: "BH2", to: "ROAD_BH_E" },
-  { from: "BH3", to: "ROAD_BH_N" },
-  { from: "BH4", to: "ROAD_BH_W" },
-  { from: "BH5", to: "ROAD_BH_W" },
-  { from: "BH6", to: "ROAD_BH_E" },
-  { from: "BH7", to: "ROAD_BH_S" },
-  { from: "BH8", to: "ROAD_BH_W" },
+  // Building links to nearest road junction
+  { from: "LAB", to: "N9" },
+  { from: "LAB", to: "N10" },
+  { from: "LAB", to: "N11" },
+  { from: "ARCH", to: "N11" },
+  { from: "ARCH", to: "N12" },
+  { from: "AB1", to: "N1" },
+  { from: "AB1", to: "N2" },
+  { from: "MAYURI", to: "N5" },
+  { from: "MAYURI", to: "N6" },
+  { from: "UNDERBELLY", to: "N4" },
+  { from: "UNDERBELLY", to: "N5" },
+  { from: "SAFAL", to: "N5" },
+  { from: "SAFAL", to: "N6" },
+  { from: "PARCEL PICKUP", to: "N16" },
+  { from: "PARCEL PICKUP", to: "N17" },
+  { from: "MPH", to: "N14" },
+  { from: "HOSPITAL", to: "N14" },
+  { from: "GH1", to: "N23" },
+  { from: "GH2", to: "N25" },
+  { from: "GH2", to: "N26" },
+  { from: "SPECIAL", to: "N36" },
+  { from: "SPECIAL", to: "N37" },
+  { from: "AB2", to: "N27" },
+  { from: "AB2", to: "N28" },
+  { from: "AB2", to: "N47" },
+  { from: "CRICKET GROUND", to: "N20" },
+  { from: "CRICKET GROUND", to: "N24" },
+  { from: "GROUND", to: "N41" },
+  { from: "GROUND", to: "N42" },
+  { from: "CHANCELLORS HOUSE", to: "N18" },
+  { from: "CHANCELLORS HOUSE", to: "N19" },
+  { from: "CENTRAL HOSTEL OFFICE", to: "N43" },
+  { from: "CENTRAL HOSTEL OFFICE", to: "N44" },
+  { from: "MAYURI MESS", to: "N38" },
+  { from: "MAYURI MESS", to: "N41" },
+  { from: "OPEN AUDI", to: "N17" },
+  { from: "OPEN AUDI", to: "N18" },
+  { from: "BH1", to: "N33" },
+  { from: "BH1", to: "N42" },
+  { from: "BH2", to: "N38" },
+  { from: "BH3", to: "N41" },
+  { from: "BH3", to: "N45" },
+  { from: "BH4", to: "N36" },
+  { from: "BH5", to: "N43" },
+  { from: "BH5", to: "N44" },
+  { from: "BH6", to: "N38" },
+  { from: "BH7", to: "N37" },
+  { from: "BH8", to: "N36" },
 
-  // West Road Pathway
-  { from: "ROAD_W1", to: "ROAD_W2" },
-  { from: "ROAD_W2", to: "ROAD_W3" },
-  { from: "ROAD_W3", to: "ROAD_W4" },
-  { from: "ROAD_W4", to: "ROAD_W5" },
+  // Academic & Lab Zone Roads
+  { from: "N9", to: "N10" },
+  { from: "N10", to: "N11" },
+  { from: "N10", to: "N12" },
+  { from: "N12", to: "N1" },
+  { from: "N1", to: "N2" },
+  { from: "N2", to: "N3" },
+  { from: "N3", to: "N4" },
+  { from: "N4", to: "N5" },
+  { from: "N5", to: "N6" },
+  { from: "N6", to: "N7" },
+  { from: "N7", to: "N8" },
+  { from: "N8", to: "N1" },
 
-  // Main Central Spine Road Network
-  { from: "ROAD_W5", to: "ROAD_C1" },
-  { from: "ROAD_C1", to: "ROAD_C2" },
-  { from: "ROAD_C2", to: "ROAD_C3" },
-  { from: "ROAD_C3", to: "ROAD_C4" },
-  { from: "ROAD_C4", to: "ROAD_C5" },
+  // Cafeteria & South-West Corridor
+  { from: "N7", to: "N13" },
+  { from: "N13", to: "N14" },
+  { from: "N14", to: "N15" },
+  { from: "N15", to: "N16" },
+  { from: "N16", to: "N17" },
 
-  // East Main Campus Highway
-  { from: "ROAD_C4", to: "ROAD_E1" },
-  { from: "ROAD_E1", to: "ROAD_E2" },
-  { from: "ROAD_E2", to: "ROAD_E3" },
+  // Central Spine Road
+  { from: "N17", to: "N18" },
+  { from: "N18", to: "N19" },
+  { from: "N19", to: "N20" },
+  { from: "N20", to: "N21" },
+  { from: "N21", to: "N22" },
 
-  // Hostel Ring Road Loop
-  { from: "ROAD_E3", to: "ROAD_BH_N" },
-  { from: "ROAD_BH_N", to: "ROAD_BH_E" },
-  { from: "ROAD_BH_E", to: "ROAD_BH_S" },
-  { from: "ROAD_BH_S", to: "ROAD_BH_W" },
-  { from: "ROAD_BH_W", to: "ROAD_E2" },
-  { from: "ROAD_BH_N", to: "ROAD_BH_W" }
+  // Girls Hostel Loop
+  { from: "N20", to: "N23" },
+  { from: "N23", to: "N24" },
+  { from: "N24", to: "N26" },
+  { from: "N26", to: "N25" },
+  { from: "N25", to: "N21" },
+
+  // AB2 Area
+  { from: "N21", to: "N46" },
+  { from: "N46", to: "N47" },
+  { from: "N47", to: "N27" },
+  { from: "N27", to: "N28" },
+  { from: "N47", to: "N29" },
+  { from: "N29", to: "N30" },
+
+  // East Campus Highway
+  { from: "N22", to: "N30" },
+  { from: "N30", to: "N31" },
+  { from: "N31", to: "N32" },
+  { from: "N32", to: "N33" },
+
+  // Boys Hostel Ring Road
+  { from: "N32", to: "N34" },
+  { from: "N34", to: "N44" },
+  { from: "N44", to: "N43" },
+  { from: "N43", to: "N35" },
+  { from: "N35", to: "N36" },
+  { from: "N36", to: "N37" },
+  { from: "N37", to: "N38" },
+  { from: "N38", to: "N45" },
+  { from: "N45", to: "N41" },
+  { from: "N41", to: "N42" },
+  { from: "N42", to: "N33" },
+  { from: "N34", to: "N39" },
+  { from: "N39", to: "N40" },
+  { from: "N40", to: "N31" },
+  { from: "N39", to: "N44" }
 ];
+
 
 

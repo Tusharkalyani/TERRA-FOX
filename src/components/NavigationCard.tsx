@@ -145,8 +145,14 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                     </option>
                   ))}
                 </select>
+                {startId === "MY_LOCATION" && (
+                  <p className="text-[9px] font-semibold text-blue-500 dark:text-blue-400 mt-0.5 animate-pulse">
+                    📍 Drag the blue pin on map to adjust exact spot
+                  </p>
+                )}
               </div>
             </div>
+
 
             {/* Swap Button */}
             <button

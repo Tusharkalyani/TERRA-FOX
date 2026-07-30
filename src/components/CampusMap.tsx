@@ -217,16 +217,37 @@ export const CampusMap: React.FC<CampusMapProps> = ({
         {/* GPS location overlay button */}
         <FindMyLocationButton userLocation={userLocation} onLocationFound={onLocationFound} />
 
-        {/* Pulsing User GPS Marker */}
+        {/* Pulsing & Draggable User GPS Location Marker */}
         {userLocation && (
-          <Marker position={userLocation} icon={createUserLocationMarkerIcon()}>
-            <Popup className="custom-popup rounded-2xl overflow-hidden">
-              <div className="p-2 text-slate-800 dark:text-slate-100 font-bold text-xs text-center">
-                📍 My Location (GPS Active)
+          <Marker 
+            position={userLocation} 
+            icon={createUserLocationMarkerIcon()}
+            draggable={true}
+            eventHandlers={{
+              dragend: (e) => {
+                const marker = e.target;
+                const position = marker.getLatLng();
+                onLocationFound([position.lat, position.lng], false);
+              }
+            }}
+          >
+            <Popup className="custom-popup rounded-2xl overflow-hidden shadow-2xl">
+              <div className="p-3 text-slate-800 dark:text-slate-100 font-bold text-xs text-center flex flex-col items-center gap-1">
+                <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-extrabold">
+                  <Locate className="w-4 h-4 animate-pulse" />
+                  <span>My Live Location</span>
+                </div>
+                <span className="text-[10px] font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
+                  {userLocation[0].toFixed(5)}, {userLocation[1].toFixed(5)}
+                </span>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-1">
+                  🖐️ Drag this pin anywhere on the map to correct your live location!
+                </p>
               </div>
             </Popup>
           </Marker>
         )}
+
 
         {/* Building Markers */}
         {buildings.map((node) => {
