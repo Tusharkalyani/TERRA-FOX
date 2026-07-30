@@ -132,21 +132,40 @@ function App() {
 
       {/* Floating UI Elements Overlay */}
       <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-4 sm:p-6">
-        {/* Top bar (weather & dark mode switch) */}
-        <div className="w-full flex justify-end items-center gap-3 pointer-events-auto">
-          <WeatherWidget />
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="glass-panel p-3 rounded-2xl shadow-lg border border-white/20 text-slate-800 dark:text-slate-100 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
-            title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-          >
-            {isDarkMode ? (
-              <Sun className="w-5 h-5 text-amber-400" />
-            ) : (
-              <Moon className="w-5 h-5 text-slate-700" />
-            )}
-          </button>
+        {/* Top bar (Brand, Weather & Dark Mode Switch) */}
+        <div className="w-full flex justify-between items-center gap-3 pointer-events-auto">
+          {/* Brand Mark */}
+          <div className="glass-panel px-3.5 py-2 rounded-2xl shadow-xl border border-white/20 flex items-center gap-2.5 backdrop-blur-xl transition-transform hover:scale-102">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 text-white flex items-center justify-center font-black text-xs shadow-md shadow-blue-500/30">
+              TF
+            </div>
+            <div className="hidden sm:block">
+              <h1 className="font-extrabold text-xs tracking-tight text-slate-900 dark:text-white leading-none">
+                TERRA FOX
+              </h1>
+              <p className="text-[9px] font-extrabold text-blue-500 dark:text-blue-400 uppercase tracking-widest mt-0.5">
+                VIT Bhopal Campus GPS
+              </p>
+            </div>
+          </div>
+
+          {/* Right Action Controls */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <WeatherWidget />
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="glass-panel p-2.5 rounded-2xl shadow-lg border border-white/20 text-slate-800 dark:text-slate-100 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+              title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {isDarkMode ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-700" />
+              )}
+            </button>
+          </div>
         </div>
+
 
         {/* Main routing card placement (floating on bottom-left) */}
         <div className="flex justify-start items-end h-full mt-2 sm:mt-0 max-h-[85vh]">
