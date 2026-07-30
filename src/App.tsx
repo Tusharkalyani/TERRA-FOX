@@ -7,7 +7,7 @@ import type { CampusNode } from "./data/campusData";
 import { Sun, Moon } from "lucide-react";
 
 function App() {
-  const [startId, setStartId] = useState<string>("LIB"); // Default start at Main Library
+  const [startId, setStartId] = useState<string>("AB1"); // Default start at Academic Block 1
   const [endId, setEndId] = useState<string>("");
   const [selectedBuilding, setSelectedBuilding] = useState<CampusNode | null>(null);
   const [route, setRoute] = useState<PathResult | null>(null);

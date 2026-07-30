@@ -4,6 +4,7 @@ import L from "leaflet";
 import { campusNodes } from "../data/campusData";
 import type { CampusNode } from "../data/campusData";
 import type { PathResult } from "../utils/pathfinder";
+import { getBuildingCategoryInfo } from "../utils/buildingIcons";
 
 interface CampusMapProps {
   startId: string;
@@ -30,51 +31,60 @@ const MapController: React.FC<{ focusCoords: [number, number] | null }> = ({ foc
   return null;
 };
 
-// Generates custom HTML/SVG markers dynamically matching Apple-esque aesthetics
+// Generates custom vector HTML/SVG markers with distinct building type icons & short ID labels
 const createCustomMarkerIcon = (
   node: CampusNode,
   isStart: boolean,
   isEnd: boolean,
   isSelected: boolean
 ) => {
-  let colorClass = "bg-blue-500 text-white border-white shadow-blue-500/20";
-  let ringClass = "border-blue-400";
+  const category = getBuildingCategoryInfo(node);
+
+  let pinBgClass = category.defaultPinBg;
+  let ringClass = category.ringClass;
   let animateClass = "";
+  let badgeLabel = "";
 
   if (isStart) {
-    colorClass = "bg-emerald-500 text-white border-white shadow-emerald-500/30";
+    pinBgClass = "bg-emerald-500 text-white border-white shadow-emerald-500/50 scale-110";
     ringClass = "border-emerald-400";
     animateClass = "pulse-marker";
+    badgeLabel = `<span class="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 bg-emerald-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center border-2 border-white shadow-md z-10">A</span>`;
   } else if (isEnd) {
-    colorClass = "bg-rose-500 text-white border-white shadow-rose-500/30";
+    pinBgClass = "bg-rose-500 text-white border-white shadow-rose-500/50 scale-110";
     ringClass = "border-rose-400";
     animateClass = "pulse-marker";
+    badgeLabel = `<span class="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 bg-rose-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center border-2 border-white shadow-md z-10">B</span>`;
   } else if (isSelected) {
-    colorClass = "bg-blue-600 text-white border-white shadow-blue-600/30";
-    ringClass = "border-blue-500";
+    pinBgClass = "bg-blue-600 text-white border-white shadow-blue-600/50 scale-110";
+    ringClass = "border-blue-400";
     animateClass = "pulse-marker";
   }
 
   const html = `
-    <div class="relative flex flex-col items-center justify-center w-10 h-10">
-      ${animateClass
-      ? `<div class="absolute -inset-2 rounded-full border-2 ${ringClass} ${animateClass} opacity-60"></div>`
-      : ""
-    }
-      <div class="w-8 h-8 rounded-full flex items-center justify-center font-black text-[9px] shadow-lg border-2 tracking-tighter transition-all duration-300 ${colorClass}">
+    <div class="relative flex flex-col items-center justify-center group cursor-pointer">
+      ${animateClass ? `<div class="absolute -inset-2 rounded-full border-2 ${ringClass} ${animateClass} opacity-60"></div>` : ""}
+      ${badgeLabel}
+      <div class="w-9 h-9 rounded-2xl flex items-center justify-center shadow-xl border-2 transition-all duration-300 transform group-hover:scale-115 ${pinBgClass}">
+        ${category.iconSvg}
+      </div>
+      <div class="w-2 h-2 -mt-1 rotate-45 border-r border-b bg-current border-current shadow-sm opacity-80"></div>
+
+      <!-- Visible short ID badge under node pin -->
+      <div class="mt-0.5 px-1.5 py-0.5 rounded-md bg-slate-900/85 dark:bg-slate-950/90 text-white text-[9px] font-black tracking-wider border border-white/20 shadow-md backdrop-blur-sm whitespace-nowrap transition-transform duration-200 group-hover:scale-105 pointer-events-none">
         ${node.id}
       </div>
-      <div class="w-1.5 h-1.5 -mt-0.5 rotate-45 border-r border-b bg-current border-current shadow-sm"></div>
     </div>
   `;
 
   return L.divIcon({
     html,
     className: "custom-map-marker",
-    iconSize: [40, 40],
-    iconAnchor: [20, 36]
+    iconSize: [64, 64],
+    iconAnchor: [32, 38]
   });
 };
+
 
 export const CampusMap: React.FC<CampusMapProps> = ({
   startId,
@@ -134,6 +144,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({
           const isStart = node.id === startId;
           const isEnd = node.id === endId;
           const isSelected = selectedBuilding?.id === node.id;
+          const category = getBuildingCategoryInfo(node);
 
           return (
             <Marker
@@ -144,14 +155,21 @@ export const CampusMap: React.FC<CampusMapProps> = ({
                 click: () => onMarkerClick(node)
               }}
             >
-              <Popup className="custom-popup rounded-2xl overflow-hidden">
-                <div className="p-2 text-slate-800 dark:text-slate-100 max-w-[200px]">
-                  <h3 className="font-bold text-xs mb-1 text-slate-900 dark:text-white flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+              <Popup className="custom-popup rounded-2xl overflow-hidden shadow-2xl">
+                <div className="p-3 text-slate-800 dark:text-slate-100 max-w-[220px]">
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${category.badgeBg}`}>
+                      {category.label}
+                    </span>
+                    <span className="text-[9px] font-bold text-slate-400">
+                      {node.id}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-sm mb-1 text-slate-900 dark:text-white leading-tight">
                     {node.name}
                   </h3>
                   {node.description && (
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                       {node.description}
                     </p>
                   )}

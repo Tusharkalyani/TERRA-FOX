@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { 
-  MapPin, 
   Navigation, 
   ArrowRightLeft, 
   Clock, 
@@ -11,6 +10,7 @@ import {
 import { campusNodes } from "../data/campusData";
 import type { CampusNode } from "../data/campusData";
 import type { PathResult } from "../utils/pathfinder";
+import { getBuildingCategoryInfo } from "../utils/buildingIcons";
 
 interface NavigationCardProps {
   startId: string;
@@ -51,7 +51,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
           </div>
           <div>
             <h1 className="font-bold text-lg leading-tight tracking-tight">Antigravity</h1>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wider uppercase">Campus GPS • Phase 1</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wider uppercase">Campus GPS • Vector Pins</p>
           </div>
         </div>
         <div className="flex bg-slate-200/60 dark:bg-slate-800/50 p-0.5 rounded-lg text-xs font-medium">
@@ -100,7 +100,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                   <option value="" disabled className="dark:bg-slate-800">Select starting building</option>
                   {buildings.map((b) => (
                     <option key={b.id} value={b.id} className="dark:bg-slate-800">
-                      {b.name}
+                      {b.name} ({b.id})
                     </option>
                   ))}
                 </select>
@@ -131,7 +131,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                   <option value="" disabled className="dark:bg-slate-800">Select destination building</option>
                   {buildings.map((b) => (
                     <option key={b.id} value={b.id} className="dark:bg-slate-800">
-                      {b.name}
+                      {b.name} ({b.id})
                     </option>
                   ))}
                 </select>
@@ -172,6 +172,8 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                     const isBuilding = node.isBuilding;
                     const isStart = idx === 0;
                     const isEnd = idx === route.path.length - 1;
+                    const catInfo = getBuildingCategoryInfo(node);
+                    const CategoryIcon = catInfo.IconComponent;
 
                     return (
                       <div key={idx} className="relative flex items-start gap-2">
@@ -182,7 +184,8 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                           "bg-blue-500 border-white dark:border-slate-900"
                         }`} />
                         
-                        <div>
+                        <div className="flex items-center gap-1.5">
+                          {isBuilding && <CategoryIcon className="w-3.5 h-3.5 text-blue-500 shrink-0" />}
                           <span className={`text-xs ${isBuilding ? "font-bold text-slate-800 dark:text-slate-100" : "font-medium text-slate-500 dark:text-slate-400"}`}>
                             {node.name}
                           </span>
@@ -220,49 +223,56 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
           {/* Directory list */}
           <div className="flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-2 pr-1">
             {filteredBuildings.length > 0 ? (
-              filteredBuildings.map((b) => (
-                <div
-                  key={b.id}
-                  onClick={() => onSelectBuildingOnMap(b)}
-                  className="group flex flex-col bg-slate-50/50 dark:bg-slate-900/25 border border-slate-100 dark:border-slate-800/30 hover:bg-blue-500/5 dark:hover:bg-blue-500/5 hover:border-blue-500/20 dark:hover:border-blue-500/20 rounded-xl p-3 cursor-pointer transition-all hover:-translate-y-0.5"
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-xs text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-blue-500 group-hover:scale-110 transition-transform" />
-                      {b.name}
-                    </span>
-                    <span className="text-[9px] font-extrabold uppercase bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded-md">
-                      {b.id}
-                    </span>
+              filteredBuildings.map((b) => {
+                const category = getBuildingCategoryInfo(b);
+                const IconComp = category.IconComponent;
+
+                return (
+                  <div
+                    key={b.id}
+                    onClick={() => onSelectBuildingOnMap(b)}
+                    className="group flex flex-col bg-slate-50/50 dark:bg-slate-900/25 border border-slate-100 dark:border-slate-800/30 hover:bg-blue-500/5 dark:hover:bg-blue-500/5 hover:border-blue-500/20 dark:hover:border-blue-500/20 rounded-2xl p-3 cursor-pointer transition-all hover:-translate-y-0.5"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-xs text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <div className={`p-1.5 rounded-xl border ${category.badgeBg} flex items-center justify-center shrink-0`}>
+                          <IconComp className="w-3.5 h-3.5" />
+                        </div>
+                        {b.name}
+                      </span>
+                      <span className="text-[9px] font-extrabold uppercase bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded-md">
+                        {b.id}
+                      </span>
+                    </div>
+                    {b.description && (
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed pl-7">
+                        {b.description}
+                      </p>
+                    )}
+                    <div className="flex gap-2 mt-2 pl-7 text-[9px] font-bold text-blue-500">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onStartChange(b.id);
+                        }}
+                        className="hover:underline hover:text-blue-600"
+                      >
+                        Set Start
+                      </button>
+                      <span className="text-slate-300 dark:text-slate-700">•</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEndChange(b.id);
+                        }}
+                        className="hover:underline hover:text-blue-600"
+                      >
+                        Set Destination
+                      </button>
+                    </div>
                   </div>
-                  {b.description && (
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed pl-5">
-                      {b.description}
-                    </p>
-                  )}
-                  <div className="flex gap-2 mt-2 pl-5 text-[9px] font-bold text-blue-500">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onStartChange(b.id);
-                      }}
-                      className="hover:underline hover:text-blue-600"
-                    >
-                      Set Start
-                    </button>
-                    <span className="text-slate-300 dark:text-slate-700">•</span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onEndChange(b.id);
-                      }}
-                      className="hover:underline hover:text-blue-600"
-                    >
-                      Set Destination
-                    </button>
-                  </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="text-center py-8 text-xs text-slate-400">
                 No buildings match your search.
@@ -271,6 +281,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
           </div>
         </div>
       )}
+
 
       {/* Footer Info */}
       <div className="mt-4 pt-3 border-t border-slate-200/50 dark:border-slate-800/40 text-[9px] text-slate-400 font-semibold flex items-center justify-between">
