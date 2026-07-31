@@ -337,9 +337,9 @@ export const CampusMap: React.FC<CampusMapProps> = ({
             <Polyline
               positions={route.coordinates}
               pathOptions={{
-                color: "#C8A96B",
+                color: "#f87171",
                 weight: 14,
-                opacity: 0.45,
+                opacity: 0.5,
                 lineCap: "round",
                 lineJoin: "round"
               }}
@@ -348,7 +348,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({
             <Polyline
               positions={route.coordinates}
               pathOptions={{
-                color: "#8FA28A",
+                color: "#ef4444",
                 weight: 6,
                 opacity: 0.95,
                 lineCap: "round",
@@ -360,7 +360,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({
             <Polyline
               positions={route.coordinates}
               pathOptions={{
-                color: "#F7F4ED",
+                color: "#ffffff",
                 weight: 2,
                 opacity: 0.95,
                 lineCap: "round",

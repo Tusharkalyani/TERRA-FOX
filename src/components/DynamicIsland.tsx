@@ -30,7 +30,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ route, transportMo
             : "translate-y-24 opacity-0 scale-90 pointer-events-none"
         }`}
       >
-        <div className="bg-[#8FA28A] p-2 rounded-full text-white shadow-md shadow-[#8FA28A]/40 animate-pulse">
+        <div className="bg-red-500 p-2 rounded-full text-white shadow-md shadow-red-500/40 animate-pulse">
           <Navigation className="w-3.5 h-3.5 fill-current rotate-45" />
         </div>
         
