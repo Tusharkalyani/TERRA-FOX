@@ -36,24 +36,24 @@ export const DisruptionsPanel: React.FC<DisruptionsPanelProps> = ({
   const getSeverityBadge = (severity: CampusDisruption["severity"]) => {
     switch (severity) {
       case "critical":
-        return "bg-rose-500/20 text-rose-400 border-rose-500/30";
+        return "bg-[#C8A96B]/25 text-[#C8A96B] border-[#C8A96B]/40";
       case "warning":
-        return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+        return "bg-[#C8A96B]/15 text-[#C8A96B] border-[#C8A96B]/30";
       default:
-        return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+        return "bg-[#8FA28A]/15 text-[#8FA28A] border-[#8FA28A]/30";
     }
   };
 
   const getTypeIcon = (type: CampusDisruption["type"]) => {
     switch (type) {
       case "blocked_path":
-        return <AlertTriangle className="w-4 h-4 text-amber-400" />;
+        return <AlertTriangle className="w-4 h-4 text-[#C8A96B]" />;
       case "room_change":
-        return <Layers className="w-4 h-4 text-blue-400" />;
+        return <Layers className="w-4 h-4 text-[#8FA28A]" />;
       case "maintenance":
-        return <AlertCircle className="w-4 h-4 text-rose-400" />;
+        return <AlertCircle className="w-4 h-4 text-[#C8A96B]" />;
       default:
-        return <Info className="w-4 h-4 text-emerald-400" />;
+        return <Info className="w-4 h-4 text-[#8FA28A]" />;
     }
   };
 

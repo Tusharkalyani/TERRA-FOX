@@ -84,7 +84,7 @@ const FindMyLocationButton: React.FC<GPSButtonProps> = ({ onLocationFound }) => 
       className="absolute bottom-24 right-5 z-[1000] glass-panel w-10 h-10 rounded-full shadow-lg border border-white/20 text-slate-800 dark:text-slate-100 flex items-center justify-center hover:scale-105 active:scale-95 transition-all pointer-events-auto cursor-pointer"
       title="Find My Location (GPS)"
     >
-      <Locate className="w-5 h-5 text-blue-500 dark:text-blue-400" />
+      <Locate className="w-5 h-5 text-[#8FA28A] dark:text-[#8FA28A]" />
     </button>
   );
 };
@@ -93,8 +93,8 @@ const FindMyLocationButton: React.FC<GPSButtonProps> = ({ onLocationFound }) => 
 const createUserLocationMarkerIcon = () => {
   const html = `
     <div class="relative flex items-center justify-center w-7 h-7">
-      <div class="absolute w-full h-full rounded-full bg-blue-500 gps-pulse-ring"></div>
-      <div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-white shadow-md z-10 flex items-center justify-center text-white text-[8px] font-black">
+      <div class="absolute w-full h-full rounded-full bg-[#8FA28A] gps-pulse-ring"></div>
+      <div class="w-4 h-4 rounded-full bg-[#8FA28A] border-2 border-white shadow-md z-10 flex items-center justify-center text-white text-[8px] font-black">
         📍
       </div>
     </div>
@@ -306,7 +306,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({
                         e.stopPropagation();
                         onMarkerClick(node);
                       }}
-                      className="w-full py-1.5 px-3 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/30 cursor-pointer"
+                      className="w-full py-1.5 px-3 bg-[#8FA28A] hover:bg-[#7e9179] text-white text-[10px] font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#8FA28A]/30 cursor-pointer"
                     >
                       <Navigation className="w-3 h-3 fill-current rotate-45" />
                       Route Here from My Location
@@ -331,36 +331,38 @@ export const CampusMap: React.FC<CampusMapProps> = ({
           );
         })}
 
-        {/* Coral Pink Road Line */}
+        {/* Outer Glow Halo */}
         {route && (
           <>
             <Polyline
               positions={route.coordinates}
               pathOptions={{
-                color: "#f43f5e",
+                color: "#C8A96B",
                 weight: 14,
-                opacity: 0.35,
+                opacity: 0.45,
                 lineCap: "round",
                 lineJoin: "round"
               }}
             />
+            {/* Animated Main Path Line */}
             <Polyline
               positions={route.coordinates}
               pathOptions={{
-                color: "#ff4757",
-                weight: 5,
+                color: "#8FA28A",
+                weight: 6,
                 opacity: 0.95,
                 lineCap: "round",
                 lineJoin: "round"
               }}
               className="route-polyline"
             />
+            {/* Inner Core Accent */}
             <Polyline
               positions={route.coordinates}
               pathOptions={{
-                color: "#ffe4e6",
+                color: "#F7F4ED",
                 weight: 2,
-                opacity: 0.9,
+                opacity: 0.95,
                 lineCap: "round",
                 lineJoin: "round"
               }}

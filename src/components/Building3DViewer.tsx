@@ -37,7 +37,7 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-extrabold tracking-widest uppercase text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+                <span className="text-[10px] font-extrabold tracking-widest uppercase text-[#8FA28A] bg-[#8FA28A]/15 px-2 py-0.5 rounded-full border border-[#8FA28A]/30">
                   {building.id}
                 </span>
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">

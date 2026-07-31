@@ -22,20 +22,20 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ route, transportMo
   };
 
   return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-500">
+    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-500">
       <div
         className={`dynamic-island-bounce flex items-center gap-3.5 bg-slate-950/90 dark:bg-slate-900/90 backdrop-blur-xl text-white border border-white/15 shadow-2xl px-5 py-2.5 rounded-full select-none ${
           isVisible
             ? "translate-y-0 opacity-100 scale-100 pointer-events-auto"
-            : "-translate-y-24 opacity-0 scale-90 pointer-events-none"
+            : "translate-y-24 opacity-0 scale-90 pointer-events-none"
         }`}
       >
-        <div className="bg-blue-500 p-2 rounded-full text-white shadow-md shadow-blue-500/40 animate-pulse">
+        <div className="bg-[#8FA28A] p-2 rounded-full text-white shadow-md shadow-[#8FA28A]/40 animate-pulse">
           <Navigation className="w-3.5 h-3.5 fill-current rotate-45" />
         </div>
         
         <div className="flex items-center gap-3 font-extrabold text-xs tracking-tight">
-          <div className="flex items-center gap-1.5 text-emerald-400 font-black text-sm">
+          <div className="flex items-center gap-1.5 text-[#C8A96B] font-black text-sm">
             <span>{getTransportEmoji(transportMode)}</span>
             <span>{route?.estimatedTime || 0} min</span>
             <span className="text-slate-300 font-bold text-xs">({route?.distance || 0}m)</span>
@@ -45,7 +45,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ route, transportMo
             <>
               <span className="text-slate-500">|</span>
               <div className="flex items-center gap-1.5 text-white font-extrabold text-xs max-w-[220px] sm:max-w-[320px] truncate">
-                <Compass className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                <Compass className="w-3.5 h-3.5 text-[#C7D3C0] shrink-0" />
                 <span className="truncate">{currentInstruction}</span>
               </div>
             </>
@@ -53,7 +53,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ route, transportMo
         </div>
 
 
-        <div className="hidden sm:flex items-center text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+        <div className="hidden sm:flex items-center text-[10px] font-bold text-[#C8A96B] bg-[#C8A96B]/15 px-2 py-0.5 rounded-full border border-[#C8A96B]/30">
           LIVE GPS
         </div>
       </div>

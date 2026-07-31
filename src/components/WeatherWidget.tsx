@@ -110,7 +110,7 @@ export const WeatherWidget: React.FC = () => {
         </div>
       </div>
       <div className="w-px h-4.5 bg-slate-200 dark:bg-slate-800/80 mx-0.5" />
-      <RefreshCw className={`w-3 h-3 text-slate-400 dark:text-slate-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-all duration-300 ${refreshing ? "animate-spin text-blue-500" : "group-hover:rotate-45"}`} />
+      <RefreshCw className={`w-3 h-3 text-slate-400 dark:text-slate-500 group-hover:text-[#8FA28A] dark:group-hover:text-[#C7D3C0] transition-all duration-300 ${refreshing ? "animate-spin text-[#8FA28A]" : "group-hover:rotate-45"}`} />
     </button>
   );
 };

@@ -39,7 +39,7 @@ export const LanguagePicker: React.FC<LanguagePickerProps> = ({
         <span className="text-xs font-black tracking-tight hidden sm:inline">
           {selectedOption.nativeName}
         </span>
-        <Globe className="w-3.5 h-3.5 text-blue-500 sm:hidden" />
+        <Globe className="w-3.5 h-3.5 text-[#8FA28A] sm:hidden" />
         <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
@@ -63,7 +63,7 @@ export const LanguagePicker: React.FC<LanguagePickerProps> = ({
                   }}
                   className={`w-full px-2.5 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-all cursor-pointer ${
                     isSelected
-                      ? "bg-blue-600 text-white font-extrabold shadow-md"
+                      ? "bg-[#8FA28A] text-white font-extrabold shadow-md"
                       : "hover:bg-slate-800 text-slate-200"
                   }`}
                 >

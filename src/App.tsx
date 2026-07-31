@@ -156,65 +156,56 @@ function App() {
 
       {/* Floating UI Elements Overlay */}
       <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-4 sm:p-6">
-        {/* Top bar (Brand & Search on Left, Alerts, Language & Weather on Right) */}
-        <div className="w-full flex justify-between items-center gap-3 pointer-events-auto">
-          {/* Left Group (Brand & Search) */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Brand Mark */}
-            <div className="glass-panel px-3.5 py-2 rounded-2xl shadow-xl border border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 flex items-center gap-2.5 backdrop-blur-xl transition-transform hover:scale-102 shrink-0">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 text-white flex items-center justify-center font-black text-xs shadow-md shadow-blue-500/30">
-                TF
-              </div>
-              <div className="flex flex-col">
-                <h1 className="font-black text-xs tracking-tight text-slate-900 dark:text-white leading-none">
-                  TERRA FOX
-                </h1>
-                <p className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mt-0.5">
-                  VIT BHOPAL CAMPUS GPS
-                </p>
-              </div>
+        {/* Unified Top Navigation Bar */}
+        <div className="w-full pointer-events-auto">
+          <div className="glass-panel px-3 sm:px-4 py-2 rounded-3xl shadow-2xl border border-slate-300/80 dark:border-slate-700/80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl flex items-center justify-between gap-2 sm:gap-4">
+            
+            {/* Left Action Controls (Language Selector) */}
+            <div className="flex items-center gap-2 shrink-0">
+              <LanguagePicker
+                currentLang={currentLang}
+                onLanguageChange={setCurrentLang}
+              />
             </div>
 
+            {/* Center Section: Enlarged Global Search Bar */}
+            <div className="flex-1 flex justify-center max-w-sm sm:max-w-xl md:max-w-2xl mx-1 sm:mx-3">
+              <GlobalSearchBar
+                onSelectBuilding={(building) => setSelectedBuilding(building)}
+                onRouteToBuilding={(building) => {
+                  setEndId(building.id);
+                  setStartId("MY_LOCATION");
+                  setSelectedBuilding(building);
+                }}
+                onView3D={(building) => setViewerBuilding(building)}
+              />
+            </div>
 
-            {/* Global Search Bar */}
-            <GlobalSearchBar
-              onSelectBuilding={(building) => setSelectedBuilding(building)}
-              onRouteToBuilding={(building) => {
-                setEndId(building.id);
-                setStartId("MY_LOCATION");
-                setSelectedBuilding(building);
-              }}
-              onView3D={(building) => setViewerBuilding(building)}
-            />
-          </div>
+            {/* Right Action Controls (Disruptions, Weather & Theme Toggle) */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <DisruptionsPanel
+                disruptions={disruptions}
+                onToggleDisruption={handleToggleDisruption}
+                onSelectDestination={(buildingId) => {
+                  setEndId(buildingId);
+                  setStartId("MY_LOCATION");
+                }}
+                onAddDisruption={handleAddDisruption}
+              />
+              <WeatherWidget />
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center shadow-sm"
+                title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                {isDarkMode ? (
+                  <Sun className="w-4 h-4 text-amber-400" />
+                ) : (
+                  <Moon className="w-4 h-4 text-slate-700" />
+                )}
+              </button>
+            </div>
 
-          {/* Right Action Controls */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <LanguagePicker
-              currentLang={currentLang}
-              onLanguageChange={setCurrentLang}
-            />
-            <DisruptionsPanel
-              disruptions={disruptions}
-              onToggleDisruption={handleToggleDisruption}
-              onSelectDestination={(buildingId) => {
-                setEndId(buildingId);
-                setStartId("MY_LOCATION");
-              }}
-              onAddDisruption={handleAddDisruption}
-            />
-            <WeatherWidget />
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className="glass-panel p-2.5 rounded-2xl shadow-lg border border-white/20 text-slate-800 dark:text-slate-100 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
-              title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            >
-              {isDarkMode ? (
-                <Sun className="w-4 h-4 text-amber-400" />
-              ) : (
-                <Moon className="w-4 h-4 text-slate-700" />
-              )}
-            </button>
           </div>
         </div>
 

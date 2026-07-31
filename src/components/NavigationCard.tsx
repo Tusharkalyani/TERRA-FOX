@@ -69,17 +69,17 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
   const getStepIcon = (step: NavigationStep) => {
     switch (step.type) {
       case "start":
-        return <MapPin className="w-3.5 h-3.5 text-emerald-500 shrink-0" />;
+        return <MapPin className="w-3.5 h-3.5 text-[#8FA28A] shrink-0" />;
       case "turn-right":
-        return <CornerUpRight className="w-3.5 h-3.5 text-blue-500 shrink-0" />;
+        return <CornerUpRight className="w-3.5 h-3.5 text-[#8FA28A] shrink-0" />;
       case "turn-left":
-        return <CornerUpLeft className="w-3.5 h-3.5 text-blue-500 shrink-0" />;
+        return <CornerUpLeft className="w-3.5 h-3.5 text-[#8FA28A] shrink-0" />;
       case "stairs":
-        return <Info className="w-3.5 h-3.5 text-amber-500 shrink-0" />;
+        return <Info className="w-3.5 h-3.5 text-[#C8A96B] shrink-0" />;
       case "arrive":
-        return <CheckCircle2 className="w-3.5 h-3.5 text-rose-500 shrink-0" />;
+        return <CheckCircle2 className="w-3.5 h-3.5 text-[#C8A96B] shrink-0" />;
       default:
-        return <MoveUp className="w-3.5 h-3.5 text-blue-400 shrink-0" />;
+        return <MoveUp className="w-3.5 h-3.5 text-[#8FA28A] shrink-0" />;
     }
   };
 
@@ -88,14 +88,14 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="bg-gradient-to-tr from-blue-600 to-indigo-500 text-white p-2 rounded-xl shadow-md shadow-blue-500/20">
+          <div className="bg-[#8FA28A] text-white p-2 rounded-xl shadow-md shadow-[#8FA28A]/30">
             <Compass className="w-5 h-5 animate-spin-slow" />
           </div>
           <div>
             <h1 className="font-black text-lg leading-tight tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
               {getTranslation(currentLang || "en", "appTitle", "TERRA FOX")} GPS
             </h1>
-            <p className="text-[10px] text-slate-700 dark:text-slate-300 font-extrabold tracking-wider uppercase">
+            <p className="text-[10px] text-[#C8A96B] font-extrabold tracking-wider uppercase">
               {getTranslation(currentLang || "en", "subtitle", "VIT Bhopal Campus GPS")}
             </p>
           </div>
@@ -107,8 +107,8 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
             onClick={() => setActiveTab("route")}
             className={`px-3 py-1 rounded-lg transition-all cursor-pointer font-black ${
               activeTab === "route"
-                ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                : "text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-white"
+                ? "bg-[#8FA28A] text-white shadow-md shadow-[#8FA28A]/30"
+                : "text-slate-800 dark:text-slate-200 hover:text-[#8FA28A]"
             }`}
           >
             {getTranslation(currentLang || "en", "routeTab", "Route")}
@@ -117,8 +117,8 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
             onClick={() => setActiveTab("directory")}
             className={`px-3 py-1 rounded-lg transition-all cursor-pointer font-black ${
               activeTab === "directory"
-                ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                : "text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-white"
+                ? "bg-[#8FA28A] text-white shadow-md shadow-[#8FA28A]/30"
+                : "text-slate-800 dark:text-slate-200 hover:text-[#8FA28A]"
             }`}
           >
             {getTranslation(currentLang || "en", "directoryTab", "Directory")}
@@ -133,7 +133,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
             {/* Start point */}
             <div className="flex items-center gap-3">
               <div className="flex flex-col items-center">
-                <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-black shadow-md">
+                <div className="w-6 h-6 rounded-full bg-[#8FA28A] text-white flex items-center justify-center text-xs font-black shadow-md">
                   A
                 </div>
                 <div className="w-0.5 h-8 bg-slate-400 dark:bg-slate-600"></div>
@@ -145,9 +145,9 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                 <select
                   value={startId}
                   onChange={(e) => onStartChange(e.target.value)}
-                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-extrabold text-xs rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-extrabold text-xs rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-[#8FA28A] cursor-pointer shadow-sm"
                 >
-                  <option value="MY_LOCATION" className="dark:bg-slate-900 font-bold text-blue-600 dark:text-blue-400">
+                  <option value="MY_LOCATION" className="dark:bg-slate-900 font-bold text-[#8FA28A] dark:text-[#C7D3C0]">
                     📍 {getTranslation(currentLang || "en", "myLocation", "My Location (Current GPS)")}
                   </option>
                   {buildings.map((b) => (
@@ -162,7 +162,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
             {/* Swap Button */}
             <button
               onClick={onSwap}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-2 rounded-full bg-blue-600 text-white border-2 border-white dark:border-slate-800 shadow-lg hover:bg-blue-700 hover:scale-110 active:scale-90 transition-all cursor-pointer z-10"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-2 rounded-full bg-[#8FA28A] text-white border-2 border-white dark:border-slate-800 shadow-lg hover:bg-[#7e9179] hover:scale-110 active:scale-90 transition-all cursor-pointer z-10"
               title="Swap Start & Destination"
             >
               <ArrowRightLeft className="w-3.5 h-3.5 rotate-90 sm:rotate-0" />
@@ -170,7 +170,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
 
             {/* End point */}
             <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs font-black shadow-md">
+              <div className="w-6 h-6 rounded-full bg-[#C8A96B] text-white flex items-center justify-center text-xs font-black shadow-md">
                 B
               </div>
               <div className="flex-1 min-w-0">
@@ -180,12 +180,12 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                 <select
                   value={endId}
                   onChange={(e) => onEndChange(e.target.value)}
-                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-extrabold text-xs rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-extrabold text-xs rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-[#8FA28A] cursor-pointer shadow-sm"
                 >
                   <option value="" disabled className="dark:bg-slate-900">
                     {getTranslation(currentLang || "en", "selectDestination", "Select Destination Building...")}
                   </option>
-                  <option value="MY_LOCATION" className="dark:bg-slate-900 font-bold text-blue-600 dark:text-blue-400">
+                  <option value="MY_LOCATION" className="dark:bg-slate-900 font-bold text-[#8FA28A] dark:text-[#C7D3C0]">
                     📍 {getTranslation(currentLang || "en", "myLocation", "My Location (Current GPS)")}
                   </option>
                   {buildings.map((b) => (
@@ -204,7 +204,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
               onClick={() => onTransportModeChange("walk")}
               className={`flex items-center justify-center gap-1.5 py-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
                 transportMode === "walk"
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                  ? "bg-[#8FA28A] text-white shadow-md shadow-[#8FA28A]/30"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700"
               }`}
             >
@@ -215,7 +215,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
               onClick={() => onTransportModeChange("run")}
               className={`flex items-center justify-center gap-1.5 py-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
                 transportMode === "run"
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                  ? "bg-[#8FA28A] text-white shadow-md shadow-[#8FA28A]/30"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700"
               }`}
             >
@@ -226,7 +226,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
               onClick={() => onTransportModeChange("cycle")}
               className={`flex items-center justify-center gap-1.5 py-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
                 transportMode === "cycle"
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                  ? "bg-[#8FA28A] text-white shadow-md shadow-[#8FA28A]/30"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700"
               }`}
             >
@@ -240,22 +240,22 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
             <div className="flex flex-col gap-3 animate-fade-in">
               {/* Distance & Time Header */}
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 text-white border-2 border-blue-400/50 rounded-2xl p-3.5 flex flex-col justify-center shadow-lg shadow-blue-500/20">
-                  <div className="flex items-center gap-1.5 text-blue-100 mb-0.5 font-black">
+                <div className="bg-[#8FA28A] text-white border-2 border-[#C7D3C0]/50 rounded-2xl p-3.5 flex flex-col justify-center shadow-lg shadow-[#8FA28A]/20">
+                  <div className="flex items-center gap-1.5 text-[#F7F4ED] mb-0.5 font-black">
                     <Navigation className="w-4 h-4 text-white" />
-                    <span className="text-[10px] font-black uppercase tracking-wider text-blue-100">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[#F7F4ED]">
                       {getTranslation(currentLang || "en", "distance", "DISTANCE")}
                     </span>
                   </div>
                   <span className="text-2xl font-black tracking-tight text-white">
-                    {route.distance} <span className="text-xs font-black text-blue-100">{getTranslation(currentLang || "en", "meters", "meters")}</span>
+                    {route.distance} <span className="text-xs font-black text-[#F7F4ED]">{getTranslation(currentLang || "en", "meters", "meters")}</span>
                   </span>
                 </div>
 
-                <div className="bg-gradient-to-br from-emerald-600 to-teal-600 dark:from-emerald-700 dark:to-teal-800 text-white border-2 border-emerald-400/50 rounded-2xl p-3.5 flex flex-col justify-center shadow-lg shadow-emerald-500/20">
-                  <div className="flex items-center gap-1.5 text-emerald-100 mb-0.5 font-black">
+                <div className="bg-[#C8A96B] text-white border-2 border-[#F7F4ED]/30 rounded-2xl p-3.5 flex flex-col justify-center shadow-lg shadow-[#C8A96B]/20">
+                  <div className="flex items-center gap-1.5 text-[#F7F4ED] mb-0.5 font-black">
                     <Clock className="w-4 h-4 text-white" />
-                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-100">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[#F7F4ED]">
                       {getTranslation(currentLang || "en", "estTime", "EST. TIME")}
                     </span>
                   </div>
@@ -275,14 +275,14 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setShowAllSteps(!showAllSteps)}
-                      className="text-[10px] text-blue-600 dark:text-blue-400 font-black hover:underline flex items-center gap-0.5 cursor-pointer"
+                      className="text-[10px] text-[#8FA28A] dark:text-[#C7D3C0] font-black hover:text-[#C8A96B] flex items-center gap-0.5 cursor-pointer"
                     >
                       {showAllSteps ? getTranslation(currentLang || "en", "collapse", "Collapse") : `${getTranslation(currentLang || "en", "viewAllSteps", "View all")} (${route.steps.length})`}
                       {showAllSteps ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                     </button>
                     <button
                       onClick={onClearRoute}
-                      className="p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 hover:text-rose-500 transition-colors"
+                      className="p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 hover:text-[#C8A96B] transition-colors"
                       title="Clear Route"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -302,7 +302,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                           {step.instruction}
                         </p>
                         {step.distance > 0 && (
-                          <span className="text-[10px] font-black text-blue-600 dark:text-blue-400">
+                          <span className="text-[10px] font-black text-[#C8A96B] dark:text-[#C8A96B]">
                             {step.distance} {getTranslation(currentLang || "en", "meters", "meters")}
                           </span>
                         )}
@@ -314,7 +314,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-100 dark:bg-slate-900/40 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 px-4">
-              <Compass className="w-10 h-10 text-blue-500 mb-2 stroke-[1.5] animate-pulse" />
+              <Compass className="w-10 h-10 text-[#8FA28A] mb-2 stroke-[1.5] animate-pulse" />
               <h3 className="text-xs font-black text-slate-900 dark:text-white mb-1">Click Any Building to Navigate</h3>
               <p className="text-[11px] font-extrabold text-slate-600 dark:text-slate-400 max-w-[240px]">
                 Click or hover over any building on the map or directory below to instantly set it as destination and route from <strong>My Location</strong>.
@@ -377,7 +377,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                           onEndChange(b.id);
                           onSelectBuildingOnMap(b);
                         }}
-                        className="text-blue-500 hover:text-blue-600 flex items-center gap-1 group-hover:underline"
+                        className="text-[#8FA28A] hover:text-[#C8A96B] flex items-center gap-1 group-hover:underline font-extrabold"
                       >
                         <Navigation className="w-3 h-3" />
                         Route Here from My Location
@@ -388,7 +388,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                             e.stopPropagation();
                             onView3D(b);
                           }}
-                          className="text-indigo-500 hover:text-indigo-600 flex items-center gap-1 hover:underline"
+                          className="text-[#C8A96B] hover:text-[#8FA28A] flex items-center gap-1 hover:underline font-extrabold"
                         >
                           View 3D
                         </button>
@@ -412,7 +412,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
           <Info className="w-3 h-3" />
           Click any building marker to set destination
         </span>
-        <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">
+        <span className="text-[10px] font-bold text-[#8FA28A] uppercase tracking-widest">
           AGY 2.0
         </span>
       </div>

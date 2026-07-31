@@ -18,7 +18,7 @@ export const MapThemeToggle: React.FC<MapThemeToggleProps> = ({
         onClick={() => onThemeChange("light")}
         className={`p-2 rounded-xl transition-all hover:scale-105 active:scale-95 cursor-pointer ${
           currentTheme === "light"
-            ? "bg-white dark:bg-slate-700 shadow-md text-blue-500"
+            ? "bg-white dark:bg-slate-700 shadow-md text-[#8FA28A]"
             : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
         }`}
         title="Light Mode (Minimalist)"
@@ -30,7 +30,7 @@ export const MapThemeToggle: React.FC<MapThemeToggleProps> = ({
         onClick={() => onThemeChange("dark")}
         className={`p-2 rounded-xl transition-all hover:scale-105 active:scale-95 cursor-pointer ${
           currentTheme === "dark"
-            ? "bg-white dark:bg-slate-700 shadow-md text-blue-400"
+            ? "bg-white dark:bg-slate-700 shadow-md text-[#8FA28A]"
             : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
         }`}
         title="Dark Mode (Night-view)"
@@ -42,7 +42,7 @@ export const MapThemeToggle: React.FC<MapThemeToggleProps> = ({
         onClick={() => onThemeChange("contrast")}
         className={`p-2 rounded-xl transition-all hover:scale-105 active:scale-95 cursor-pointer ${
           currentTheme === "contrast"
-            ? "bg-white dark:bg-slate-700 shadow-md text-blue-500"
+            ? "bg-white dark:bg-slate-700 shadow-md text-[#8FA28A]"
             : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
         }`}
         title="High Contrast (OpenStreetMap)"
