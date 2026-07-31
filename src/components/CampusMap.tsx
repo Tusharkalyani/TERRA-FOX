@@ -81,10 +81,10 @@ const FindMyLocationButton: React.FC<GPSButtonProps> = ({ onLocationFound }) => 
   return (
     <button
       onClick={handleLocate}
-      className="absolute bottom-24 right-5 z-[1000] glass-panel w-10 h-10 rounded-full shadow-lg border border-white/20 text-slate-800 dark:text-slate-100 flex items-center justify-center hover:scale-105 active:scale-95 transition-all pointer-events-auto cursor-pointer"
+      className="absolute bottom-24 right-6 z-[1000] glass-panel w-11 h-11 rounded-2xl shadow-2xl border border-slate-700/80 bg-slate-900/90 dark:bg-slate-950/90 text-white flex items-center justify-center hover:scale-108 active:scale-95 transition-all pointer-events-auto cursor-pointer"
       title="Find My Location (GPS)"
     >
-      <Locate className="w-5 h-5 text-[#8FA28A] dark:text-[#8FA28A]" />
+      <Locate className="w-5 h-5 text-rose-400 dark:text-rose-400" />
     </button>
   );
 };
@@ -207,7 +207,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({
           attribution="&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
         />
 
-        <ZoomControl position="bottomright" />
+        <ZoomControl position="topright" />
         <MapController focusCoords={targetCoords} />
 
         {/* Location & Recenter Button */}

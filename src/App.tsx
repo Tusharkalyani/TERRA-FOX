@@ -7,6 +7,7 @@ import { Building3DViewer } from "./components/Building3DViewer";
 import { DisruptionsPanel } from "./components/DisruptionsPanel";
 import { GlobalSearchBar } from "./components/GlobalSearchBar";
 import { LanguagePicker } from "./components/LanguagePicker";
+import { ChatAssistant } from "./components/ChatAssistant";
 import { findShortestPath } from "./utils/pathfinder";
 import type { PathResult, TransportMode } from "./utils/pathfinder";
 import type { CampusNode } from "./data/campusData";
@@ -244,6 +245,18 @@ function App() {
           isDarkMode={isDarkMode} 
         />
       )}
+
+      {/* Floating AI Chat Assistant Widget (Bottom Right) */}
+      <ChatAssistant
+        onRouteToBuilding={(building) => {
+          setEndId(building.id);
+          setStartId("MY_LOCATION");
+          setSelectedBuilding(building);
+        }}
+        onSelectBuilding={(building) => setSelectedBuilding(building)}
+        onView3D={(building) => setViewerBuilding(building)}
+        disruptions={disruptions}
+      />
     </div>
   );
 }
