@@ -35,6 +35,7 @@ interface NavigationCardProps {
   onSwap: () => void;
   onSelectBuildingOnMap: (node: CampusNode) => void;
   onView3D: (node: CampusNode) => void;
+  onOpenIndoorNav?: (buildingId: "AB1" | "AB2") => void;
   transportMode: TransportMode;
   onTransportModeChange: (mode: TransportMode) => void;
   onClearRoute: () => void;
@@ -51,6 +52,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
   onSwap,
   onSelectBuildingOnMap,
   onView3D,
+  onOpenIndoorNav,
   transportMode,
   onTransportModeChange,
   onClearRoute,
@@ -382,6 +384,18 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                         <Navigation className="w-3 h-3" />
                         Route Here from My Location
                       </button>
+                      {(b.id === "AB1" || b.id === "AB2") && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (onOpenIndoorNav) onOpenIndoorNav(b.id as "AB1" | "AB2");
+                          }}
+                          className="text-rose-400 hover:text-rose-300 flex items-center gap-1 font-extrabold"
+                        >
+                          <Compass className="w-3 h-3" />
+                          Indoor Map
+                        </button>
+                      )}
                       {b.id === "AB1" && (
                         <button
                           onClick={(e) => {

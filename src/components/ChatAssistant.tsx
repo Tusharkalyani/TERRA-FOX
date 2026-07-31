@@ -20,6 +20,7 @@ interface ChatAssistantProps {
   onRouteToBuilding: (building: CampusNode) => void;
   onSelectBuilding?: (building: CampusNode) => void;
   onView3D?: (building: CampusNode) => void;
+  onOpenIndoorNav?: (buildingId: "AB1" | "AB2") => void;
   disruptions?: CampusDisruption[];
 }
 
@@ -36,6 +37,7 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({
   onRouteToBuilding,
   onSelectBuilding,
   onView3D,
+  onOpenIndoorNav,
   disruptions = []
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -318,6 +320,19 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({
                           <Navigation className="w-3 h-3 fill-current rotate-45" />
                           Route Here (Red Path)
                         </button>
+
+                        {(msg.buildingAction.id === "AB1" || msg.buildingAction.id === "AB2") && (
+                          <button
+                            onClick={() => {
+                              if (msg.buildingAction && onOpenIndoorNav) {
+                                onOpenIndoorNav(msg.buildingAction.id as "AB1" | "AB2");
+                              }
+                            }}
+                            className="py-1.5 px-2.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-bold text-[10px] rounded-xl transition-all cursor-pointer flex items-center gap-1"
+                          >
+                            🗺️ Indoor Map
+                          </button>
+                        )}
 
                         {msg.buildingAction.id === "AB1" && onView3D && (
                           <button

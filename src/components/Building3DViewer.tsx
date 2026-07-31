@@ -6,12 +6,14 @@ import { getBuildingCategoryInfo } from "../utils/buildingIcons";
 interface Building3DViewerProps {
   building: CampusNode;
   onClose: () => void;
+  onOpenIndoorNav?: (buildingId: "AB1" | "AB2") => void;
   isDarkMode?: boolean;
 }
 
 export const Building3DViewer: React.FC<Building3DViewerProps> = ({
   building,
-  onClose
+  onClose,
+  onOpenIndoorNav
 }) => {
 
   const [activeTab, setActiveTab] = useState<"isometric" | "blueprint" | "details">("isometric");
@@ -51,6 +53,18 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
+            {(building.id === "AB1" || building.id === "AB2") && (
+              <button
+                onClick={() => {
+                  onClose();
+                  if (onOpenIndoorNav) onOpenIndoorNav(building.id as "AB1" | "AB2");
+                }}
+                className="px-3.5 py-2 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-extrabold text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer"
+              >
+                🗺️ Indoor Floorplan Nav
+              </button>
+            )}
+
             {/* View Mode Switcher */}
             <div className="hidden sm:flex bg-slate-800/80 p-1 rounded-xl text-xs font-semibold border border-white/10">
               <button

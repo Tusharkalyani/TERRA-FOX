@@ -8,6 +8,7 @@ import { DisruptionsPanel } from "./components/DisruptionsPanel";
 import { GlobalSearchBar } from "./components/GlobalSearchBar";
 import { LanguagePicker } from "./components/LanguagePicker";
 import { ChatAssistant } from "./components/ChatAssistant";
+import { IndoorNavigationModal } from "./components/IndoorNavigationModal";
 import { findShortestPath } from "./utils/pathfinder";
 import type { PathResult, TransportMode } from "./utils/pathfinder";
 import type { CampusNode } from "./data/campusData";
@@ -21,6 +22,7 @@ function App() {
   const [endId, setEndId] = useState<string>("AB1"); // Default destination to Academic Block 1
   const [selectedBuilding, setSelectedBuilding] = useState<CampusNode | null>(null);
   const [viewerBuilding, setViewerBuilding] = useState<CampusNode | null>(null);
+  const [indoorBuilding, setIndoorBuilding] = useState<"AB1" | "AB2" | null>(null);
   const [route, setRoute] = useState<PathResult | null>(null);
   const [transportMode, setTransportMode] = useState<TransportMode>("walk");
   const [disruptions, setDisruptions] = useState<CampusDisruption[]>(initialDisruptions);
@@ -145,6 +147,7 @@ function App() {
           route={route}
           onMarkerClick={handleMarkerClick}
           onView3D={(node) => setViewerBuilding(node)}
+          onOpenIndoorNav={(bId) => setIndoorBuilding(bId)}
           isDarkMode={isDarkMode}
           userLocation={userLocation}
           onLocationFound={handleLocationFound}
@@ -158,7 +161,7 @@ function App() {
       {/* Floating UI Elements Overlay */}
       <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-4 sm:p-6">
         {/* Unified Top Navigation Bar */}
-        <div className="w-full pointer-events-auto">
+        <div className="w-full pointer-events-auto relative z-30">
           <div className="glass-panel px-3 sm:px-4 py-2 rounded-3xl shadow-2xl border border-slate-300/80 dark:border-slate-700/80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl flex items-center justify-between gap-2 sm:gap-4">
             
             {/* Left Action Controls (Language Selector) */}
@@ -210,13 +213,8 @@ function App() {
           </div>
         </div>
 
-
-
-
-
-
         {/* Main routing card placement (floating on bottom-left) */}
-        <div className="flex justify-start items-end h-full mt-2 sm:mt-0 max-h-[85vh]">
+        <div className="flex justify-start items-end h-full mt-2 sm:mt-0 max-h-[85vh] relative z-10">
           <div className="pointer-events-auto w-full sm:w-auto">
             <NavigationCard
               startId={startId}
@@ -227,6 +225,7 @@ function App() {
               onSwap={handleSwap}
               onSelectBuildingOnMap={handleSelectBuildingOnMap}
               onView3D={(node) => setViewerBuilding(node)}
+              onOpenIndoorNav={(bId) => setIndoorBuilding(bId)}
               transportMode={transportMode}
               onTransportModeChange={setTransportMode}
               onClearRoute={handleClearRoute}
@@ -242,7 +241,16 @@ function App() {
         <Building3DViewer 
           building={viewerBuilding} 
           onClose={() => setViewerBuilding(null)} 
+          onOpenIndoorNav={(bId) => setIndoorBuilding(bId)}
           isDarkMode={isDarkMode} 
+        />
+      )}
+
+      {/* Indoor Navigation Modal (AB1 & AB2 Floor Map) */}
+      {indoorBuilding && (
+        <IndoorNavigationModal
+          initialBuildingId={indoorBuilding}
+          onClose={() => setIndoorBuilding(null)}
         />
       )}
 
@@ -255,6 +263,7 @@ function App() {
         }}
         onSelectBuilding={(building) => setSelectedBuilding(building)}
         onView3D={(building) => setViewerBuilding(building)}
+        onOpenIndoorNav={(bId) => setIndoorBuilding(bId)}
         disruptions={disruptions}
       />
     </div>

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Polyline, Popup, ZoomControl, useMap } from "react-leaflet";
 import L from "leaflet";
-import { Locate, Navigation } from "lucide-react";
+import { Locate, Navigation, Compass } from "lucide-react";
 import { campusNodes } from "../data/campusData";
 import type { CampusNode } from "../data/campusData";
 import type { PathResult } from "../utils/pathfinder";
@@ -15,6 +15,7 @@ interface CampusMapProps {
   route: PathResult | null;
   onMarkerClick: (node: CampusNode) => void;
   onView3D: (node: CampusNode) => void;
+  onOpenIndoorNav?: (buildingId: "AB1" | "AB2") => void;
   isDarkMode: boolean;
   userLocation: [number, number] | null;
   onLocationFound: (coords: [number, number], isMock: boolean) => void;
@@ -166,6 +167,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({
   route,
   onMarkerClick,
   onView3D,
+  onOpenIndoorNav,
   isDarkMode: _isDarkMode,
   userLocation,
   onLocationFound,
@@ -312,13 +314,26 @@ export const CampusMap: React.FC<CampusMapProps> = ({
                       Route Here from My Location
                     </button>
 
+                    {(node.id === "AB1" || node.id === "AB2") && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onOpenIndoorNav) onOpenIndoorNav(node.id as "AB1" | "AB2");
+                        }}
+                        className="w-full py-1.5 px-3 bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
+                      >
+                        <Compass className="w-3.5 h-3.5" />
+                        Indoor Navigation ({node.id})
+                      </button>
+                    )}
+
                     {node.id === "AB1" && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           onView3D(node);
                         }}
-                        className="w-full py-1.5 px-3 bg-slate-800 hover:bg-slate-900 text-white text-[10px] font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                        className="w-full py-1.5 px-3 bg-slate-800 hover:bg-slate-900 text-white text-[10px] font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                         View 3D Structure
