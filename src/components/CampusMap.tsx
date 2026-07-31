@@ -6,6 +6,7 @@ import { campusNodes } from "../data/campusData";
 import type { CampusNode } from "../data/campusData";
 import type { PathResult } from "../utils/pathfinder";
 import { getBuildingCategoryInfo } from "../utils/buildingIcons";
+import type { CampusDisruption } from "../data/disruptionsData";
 
 interface CampusMapProps {
   startId: string;
@@ -17,6 +18,7 @@ interface CampusMapProps {
   isDarkMode: boolean;
   userLocation: [number, number] | null;
   onLocationFound: (coords: [number, number], isMock: boolean) => void;
+  disruptions?: CampusDisruption[];
 }
 
 // Controller component to dynamically animate map center updates
@@ -68,7 +70,6 @@ const FindMyLocationButton: React.FC<GPSButtonProps> = ({ onLocationFound }) => 
   };
 
   const triggerFallback = () => {
-    // Default fallback coordinates near library/campus spine
     const mockCoords: [number, number] = [23.075670, 76.854422];
     onLocationFound(mockCoords, true);
     map.flyTo(mockCoords, 18, {
@@ -165,22 +166,17 @@ export const CampusMap: React.FC<CampusMapProps> = ({
   route,
   onMarkerClick,
   onView3D,
-  isDarkMode,
+  isDarkMode: _isDarkMode,
   userLocation,
-  onLocationFound
+  onLocationFound,
+  disruptions = []
 }) => {
-  // Default to Satellite mode matching the screenshot!
-  const [mapStyle, setMapStyle] = React.useState<"standard" | "satellite" | "hybrid">("satellite");
 
-  // Center of campus (Main Library coords)
   const defaultCenter: [number, number] = [23.075670, 76.854422];
-
-  // Map boundaries (South Latitude, West Longitude) and (North Latitude, East Longitude)
   const southWest = L.latLng(23.06729, 76.83948);
   const northEast = L.latLng(23.08697, 76.86577);
   const bounds = L.latLngBounds(southWest, northEast);
 
-  // Dynamic targeting coordinates
   let targetCoords: [number, number] | null = null;
   if (selectedBuilding) {
     targetCoords = [selectedBuilding.lat, selectedBuilding.lng];
@@ -189,16 +185,9 @@ export const CampusMap: React.FC<CampusMapProps> = ({
     targetCoords = route.coordinates[midIndex];
   }
 
-  // Apple Maps aesthetic tile providers (Carto Voyager for Vector, Esri for Satellite)
-  const vectorTileUrl = isDarkMode
-    ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-    : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
-
-  const satelliteTileUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-  const labelsOverlayUrl = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png";
-
-  const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
   const buildings = campusNodes.filter((node) => node.isBuilding);
+
+
 
   return (
     <div className="w-full h-full relative z-0">
@@ -212,70 +201,18 @@ export const CampusMap: React.FC<CampusMapProps> = ({
         zoomControl={false}
         className="w-full h-full"
       >
-        {/* Apple Maps Vector Tiles */}
-        {mapStyle === "standard" && (
-          <TileLayer url={vectorTileUrl} attribution={attribution} />
-        )}
-
-        {/* Satellite View */}
-        {mapStyle === "satellite" && (
-          <TileLayer url={satelliteTileUrl} attribution="&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community" />
-        )}
-
-        {/* Hybrid View (Satellite + Apple Labels) */}
-        {mapStyle === "hybrid" && (
-          <>
-            <TileLayer url={satelliteTileUrl} attribution="&copy; Esri &mdash; Imagery" />
-            <TileLayer url={labelsOverlayUrl} attribution="&copy; CARTO" />
-          </>
-        )}
+        {/* High-Resolution Satellite Map Tile Layer */}
+        <TileLayer
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          attribution="&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+        />
 
         <ZoomControl position="bottomright" />
-        
-        {/* Dynamic Map panning controller */}
         <MapController focusCoords={targetCoords} />
 
-        {/* Floating Apple Maps Controls (Bottom Right) */}
-        <div className="leaflet-bottom leaflet-right !bottom-6 !right-6 z-[1000] flex flex-col gap-2 pointer-events-auto items-end">
-          {/* Apple Maps Style Switcher Pill */}
-          <div className="glass-panel p-1 rounded-2xl shadow-2xl border border-white/20 flex items-center gap-1 text-[10px] font-extrabold backdrop-blur-xl">
-            <button
-              onClick={() => setMapStyle("satellite")}
-              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
-                mapStyle === "satellite"
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
-              }`}
-            >
-              🛰️ Satellite
-            </button>
-            <button
-              onClick={() => setMapStyle("hybrid")}
-              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
-                mapStyle === "hybrid"
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
-              }`}
-            >
-              🏙️ Hybrid
-            </button>
-            <button
-              onClick={() => setMapStyle("standard")}
-              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
-                mapStyle === "standard"
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
-              }`}
-            >
-              🗺️ Map
-            </button>
-          </div>
+        {/* Location & Recenter Button */}
+        <FindMyLocationButton userLocation={userLocation} onLocationFound={onLocationFound} />
 
-          {/* Location & Recenter Control */}
-          <FindMyLocationButton userLocation={userLocation} onLocationFound={onLocationFound} />
-        </div>
-
-        {/* Pulsing User GPS Marker */}
         {userLocation && (
           <Marker
             position={userLocation}
@@ -288,6 +225,45 @@ export const CampusMap: React.FC<CampusMapProps> = ({
             </Popup>
           </Marker>
         )}
+
+        {/* Blocked Path Disruption Warning Markers */}
+        {disruptions
+          .filter((d) => d.active && d.affectedNodeIds.length > 0)
+          .flatMap((d) => d.affectedNodeIds)
+          .map((nodeId) => {
+            const node = campusNodes.find((n) => n.id === nodeId);
+            if (!node) return null;
+            return (
+              <Marker
+                key={`blocked-${nodeId}`}
+                position={[node.lat, node.lng]}
+                icon={L.divIcon({
+                  html: `
+                    <div class="relative flex items-center justify-center w-8 h-8 pointer-events-auto">
+                      <div class="absolute inset-0 bg-rose-500 rounded-full animate-ping opacity-60"></div>
+                      <div class="w-7 h-7 rounded-full bg-rose-600 text-white border-2 border-white shadow-xl flex items-center justify-center text-xs font-bold z-10">
+                        🚧
+                      </div>
+                    </div>
+                  `,
+                  className: "blocked-node-marker",
+                  iconSize: [32, 32],
+                  iconAnchor: [16, 16]
+                })}
+              >
+                <Popup className="custom-popup rounded-2xl overflow-hidden shadow-2xl">
+                  <div className="p-2.5 text-center max-w-[200px]">
+                    <div className="text-rose-500 font-extrabold text-xs mb-1 flex items-center justify-center gap-1">
+                      🚧 Pathway Blocked
+                    </div>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+                      Construction in progress. Pathfinder auto-reroutes traffic around this point ({nodeId}).
+                    </p>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
 
         {/* Building Markers matching screenshot */}
         {buildings.map((node) => {
@@ -355,10 +331,9 @@ export const CampusMap: React.FC<CampusMapProps> = ({
           );
         })}
 
-        {/* Realistic Paved Pink/Coral Road Line matching screenshot */}
+        {/* Coral Pink Road Line */}
         {route && (
           <>
-            {/* Pink Outer Glow Aura */}
             <Polyline
               positions={route.coordinates}
               pathOptions={{
@@ -369,8 +344,6 @@ export const CampusMap: React.FC<CampusMapProps> = ({
                 lineJoin: "round"
               }}
             />
-
-            {/* Main Coral Pink Road Line matching screenshot */}
             <Polyline
               positions={route.coordinates}
               pathOptions={{
@@ -382,8 +355,6 @@ export const CampusMap: React.FC<CampusMapProps> = ({
               }}
               className="route-polyline"
             />
-
-            {/* Inner White Road Core */}
             <Polyline
               positions={route.coordinates}
               pathOptions={{
@@ -396,7 +367,6 @@ export const CampusMap: React.FC<CampusMapProps> = ({
             />
           </>
         )}
-
       </MapContainer>
     </div>
   );

@@ -34,23 +34,24 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ route, transportMo
           <Navigation className="w-3.5 h-3.5 fill-current rotate-45" />
         </div>
         
-        <div className="flex items-center gap-3 font-semibold text-xs tracking-tight">
-          <div className="flex items-center gap-1.5 text-emerald-400 font-extrabold text-sm">
+        <div className="flex items-center gap-3 font-extrabold text-xs tracking-tight">
+          <div className="flex items-center gap-1.5 text-emerald-400 font-black text-sm">
             <span>{getTransportEmoji(transportMode)}</span>
             <span>{route?.estimatedTime || 0} min</span>
-            <span className="text-slate-400 font-normal text-xs">({route?.distance || 0}m)</span>
+            <span className="text-slate-300 font-bold text-xs">({route?.distance || 0}m)</span>
           </div>
           
           {currentInstruction && (
             <>
-              <span className="text-slate-700 dark:text-slate-600">|</span>
-              <div className="flex items-center gap-1.5 text-slate-200 text-xs font-medium max-w-[220px] sm:max-w-[320px] truncate">
+              <span className="text-slate-500">|</span>
+              <div className="flex items-center gap-1.5 text-white font-extrabold text-xs max-w-[220px] sm:max-w-[320px] truncate">
                 <Compass className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                 <span className="truncate">{currentInstruction}</span>
               </div>
             </>
           )}
         </div>
+
 
         <div className="hidden sm:flex items-center text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
           LIVE GPS

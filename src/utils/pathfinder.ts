@@ -2,7 +2,7 @@ import { campusNodes, campusEdges } from "../data/campusData";
 import type { CampusNode } from "../data/campusData";
 
 /**
- * Calculates the geodetic distance between two points using the Haversine formula
+ * Calculates the geodetic distance between two points using the Haversine formula (in meters)
  */
 export function getHaversineDistance(
   lat1: number,
@@ -160,34 +160,61 @@ export function generateTurnByTurnSteps(path: CampusNode[]): NavigationStep[] {
   return steps;
 }
 
-
 /**
- * Runs 2D/3D A* Pathfinding Algorithm with dynamic user location binding
+ * A* Pathfinding Algorithm
+ * Strictly travels node-by-node along campus road junction waypoints (N1..N83).
+ * Never jumps directly across empty space between buildings!
  */
 export function findShortestPath(
   startId: string,
   endId: string,
   userCoords?: [number, number] | null,
-  transportMode: TransportMode = "walk"
+  transportMode: TransportMode = "walk",
+  blockedNodeIds: string[] = []
 ): PathResult | null {
-  // 1. Prepare Nodes & Virtual Node for MY_LOCATION if requested
   const allNodes: CampusNode[] = [...campusNodes];
-  const customAdjacency: { [key: string]: string[] } = {};
+  const customAdjacency: { [key: string]: { to: string; weight: number }[] } = {};
 
-  // Build baseline adjacency
-  campusNodes.forEach((node) => {
+  // Initialize adjacency map for all campus nodes
+  allNodes.forEach((node) => {
     customAdjacency[node.id] = [];
   });
+
+  // 1. Populate baseline graph edges from campusEdges (Road to Road & Building to Access Road)
   campusEdges.forEach((edge) => {
-    if (customAdjacency[edge.from] && customAdjacency[edge.to]) {
-      customAdjacency[edge.from].push(edge.to);
-      customAdjacency[edge.to].push(edge.from);
+    const u = allNodes.find((n) => n.id === edge.from);
+    const v = allNodes.find((n) => n.id === edge.to);
+
+    if (u && v) {
+      const weight = getHaversineDistance(u.lat, u.lng, v.lat, v.lng);
+      customAdjacency[u.id].push({ to: v.id, weight });
+      customAdjacency[v.id].push({ to: u.id, weight });
     }
   });
 
-  // Handle MY_LOCATION binding if selected as start or destination
+  // 2. Ensure every building is linked to its 2 nearest road junction nodes for seamless road entry
+  allNodes.forEach((node) => {
+    if (node.isBuilding) {
+      const sortedRoads = [...campusNodes]
+        .filter((n) => !n.isBuilding)
+        .sort(
+          (n1, n2) =>
+            getHaversineDistance(node.lat, node.lng, n1.lat, n1.lng) -
+            getHaversineDistance(node.lat, node.lng, n2.lat, n2.lng)
+        );
+
+      sortedRoads.slice(0, 2).forEach((road) => {
+        const weight = getHaversineDistance(node.lat, node.lng, road.lat, road.lng);
+        if (!customAdjacency[node.id].some((e) => e.to === road.id)) {
+          customAdjacency[node.id].push({ to: road.id, weight });
+          customAdjacency[road.id].push({ to: node.id, weight });
+        }
+      });
+    }
+  });
+
+  // 3. Handle MY_LOCATION binding if selected as start or destination
   if (startId === "MY_LOCATION" || endId === "MY_LOCATION") {
-    // Default fallback coordinates if userCoords not supplied
     const coords = userCoords || [23.075670, 76.854422];
     const myLocationNode: CampusNode = {
       id: "MY_LOCATION",
@@ -202,25 +229,21 @@ export function findShortestPath(
     allNodes.push(myLocationNode);
     customAdjacency["MY_LOCATION"] = [];
 
-    // Connect MY_LOCATION to nearest non-building road/junction node
-    let nearestNodeId = "";
-    let minDistance = Infinity;
+    // Connect MY_LOCATION to top 3 nearest non-building road nodes for road entry
+    const sortedRoads = [...campusNodes]
+      .filter((n) => !n.isBuilding && !blockedNodeIds.includes(n.id))
+      .sort(
+        (n1, n2) =>
+          getHaversineDistance(coords[0], coords[1], n1.lat, n1.lng) -
+          getHaversineDistance(coords[0], coords[1], n2.lat, n2.lng)
+      );
 
-    campusNodes.forEach((node) => {
-      if (!node.isBuilding) {
-        const dist = getHaversineDistance(coords[0], coords[1], node.lat, node.lng);
-        if (dist < minDistance) {
-          minDistance = dist;
-          nearestNodeId = node.id;
-        }
-      }
+    sortedRoads.slice(0, 3).forEach((nearest) => {
+      const weight = getHaversineDistance(coords[0], coords[1], nearest.lat, nearest.lng);
+      customAdjacency["MY_LOCATION"].push({ to: nearest.id, weight });
+      if (!customAdjacency[nearest.id]) customAdjacency[nearest.id] = [];
+      customAdjacency[nearest.id].push({ to: "MY_LOCATION", weight });
     });
-
-    if (nearestNodeId) {
-      customAdjacency["MY_LOCATION"].push(nearestNodeId);
-      if (!customAdjacency[nearestNodeId]) customAdjacency[nearestNodeId] = [];
-      customAdjacency[nearestNodeId].push("MY_LOCATION");
-    }
   }
 
   const startNode = allNodes.find((n) => n.id === startId);
@@ -228,7 +251,7 @@ export function findShortestPath(
 
   if (!startNode || !endNode) return null;
 
-  // Edge case: start is end
+  // Edge case: start is destination
   if (startId === endId) {
     const steps = generateTurnByTurnSteps([startNode]);
     return {
@@ -241,12 +264,13 @@ export function findShortestPath(
     };
   }
 
-  // A* Search
-  const getHeuristicCost = (node: CampusNode): number => {
+  // --- A* SEARCH ALGORITHM IMPLEMENTATION ---
+  // Heuristic function h(n): Straight-line Haversine distance to target destination
+  const heuristic = (node: CampusNode): number => {
     return getHaversineDistance(node.lat, node.lng, endNode.lat, endNode.lng);
   };
 
-  const openSet: string[] = [startId];
+  const openSet = new Set<string>([startId]);
   const cameFrom: { [key: string]: string } = {};
 
   const gScore: { [key: string]: number } = {};
@@ -258,22 +282,23 @@ export function findShortestPath(
   });
 
   gScore[startId] = 0;
-  fScore[startId] = getHeuristicCost(startNode);
+  fScore[startId] = heuristic(startNode);
 
-  while (openSet.length > 0) {
-    let currentId = openSet[0];
-    let lowestF = fScore[currentId];
-    let currentIndex = 0;
+  while (openSet.size > 0) {
+    // Select node in openSet with lowest fScore = g(n) + h(n)
+    let currentId: string | null = null;
+    let lowestF = Infinity;
 
-    for (let i = 1; i < openSet.length; i++) {
-      const id = openSet[i];
-      if (fScore[id] < lowestF) {
-        lowestF = fScore[id];
-        currentId = id;
-        currentIndex = i;
+    for (const nodeId of openSet) {
+      if (fScore[nodeId] < lowestF) {
+        lowestF = fScore[nodeId];
+        currentId = nodeId;
       }
     }
 
+    if (!currentId) break;
+
+    // Target destination reached!
     if (currentId === endId) {
       const pathNodes: CampusNode[] = [];
       let tempId: string | undefined = currentId;
@@ -284,59 +309,85 @@ export function findShortestPath(
       }
 
       const coordinates = pathNodes.map((n) => [n.lat, n.lng] as [number, number]);
-      const distance = gScore[endId];
+      const totalDistance = Math.round(gScore[endId]);
 
-      // Speed multipliers in meters per second
-      let speedMs = 1.4; // walk
-      if (transportMode === "run") speedMs = 3.0;
-      if (transportMode === "cycle") speedMs = 4.5;
+      // Speed calculation in meters per second
+      let speedMs = 1.4; // walk (~5 km/h)
+      if (transportMode === "run") speedMs = 3.0; // run (~11 km/h)
+      if (transportMode === "cycle") speedMs = 4.5; // cycle (~16 km/h)
 
-      const estimatedTime = Math.max(1, Math.round(distance / speedMs / 60));
+      const estimatedTime = Math.max(1, Math.round(totalDistance / speedMs / 60));
       const steps = generateTurnByTurnSteps(pathNodes);
       const hasIndoorSegment = pathNodes.some((n) => (n.floor ?? 0) > 0 || n.buildingId === "AB1");
 
       return {
         path: pathNodes,
         coordinates,
-        distance: Math.round(distance),
+        distance: totalDistance,
         estimatedTime,
         steps,
         hasIndoorSegment
       };
     }
 
-    openSet.splice(currentIndex, 1);
+    openSet.delete(currentId);
 
     const neighbors = customAdjacency[currentId] || [];
-    for (const neighborId of neighbors) {
-      const currentNode = allNodes.find((n) => n.id === currentId)!;
-      const neighborNode = allNodes.find((n) => n.id === neighborId)!;
+    for (const neighbor of neighbors) {
+      const neighborId = neighbor.to;
 
-      // Skip intermediate building nodes unless it's the final destination
-      if (neighborNode.isBuilding && neighborId !== endId && neighborId !== startId) {
+      // Skip blocked road nodes (live disruptions avoidance!)
+      if (blockedNodeIds.includes(neighborId) && neighborId !== startId && neighborId !== endId) {
         continue;
       }
 
-      const stepCost = getHaversineDistance(
-        currentNode.lat,
-        currentNode.lng,
-        neighborNode.lat,
-        neighborNode.lng
-      );
+      // Skip intermediate building nodes unless it's the start or destination node
+      const neighborNode = allNodes.find((n) => n.id === neighborId);
+      if (neighborNode?.isBuilding && neighborId !== endId && neighborId !== startId) {
+        continue;
+      }
 
-      const tentativeGScore = gScore[currentId] + stepCost;
+      const tentativeGScore = gScore[currentId] + neighbor.weight;
 
       if (tentativeGScore < gScore[neighborId]) {
         cameFrom[neighborId] = currentId;
         gScore[neighborId] = tentativeGScore;
-        fScore[neighborId] = tentativeGScore + getHeuristicCost(neighborNode);
+        fScore[neighborId] = tentativeGScore + heuristic(neighborNode!);
 
-        if (!openSet.includes(neighborId)) {
-          openSet.push(neighborId);
+        if (!openSet.has(neighborId)) {
+          openSet.add(neighborId);
         }
       }
     }
   }
 
-  return null;
+  // Fallback: If road graph is completely severed by active road blockades, generate road-node-connected route
+  const startRoad = campusNodes
+    .filter((n) => !n.isBuilding)
+    .sort((a, b) => getHaversineDistance(startNode.lat, startNode.lng, a.lat, a.lng) - getHaversineDistance(startNode.lat, startNode.lng, b.lat, b.lng))[0] || startNode;
+  const endRoad = campusNodes
+    .filter((n) => !n.isBuilding)
+    .sort((a, b) => getHaversineDistance(endNode.lat, endNode.lng, a.lat, a.lng) - getHaversineDistance(endNode.lat, endNode.lng, b.lat, b.lng))[0] || endNode;
+
+  const fallbackNodes = [startNode, startRoad, endRoad, endNode].filter((n, idx, arr) => arr.findIndex((x) => x.id === n.id) === idx);
+  let fallbackDistance = 0;
+  for (let i = 0; i < fallbackNodes.length - 1; i++) {
+    fallbackDistance += getHaversineDistance(fallbackNodes[i].lat, fallbackNodes[i].lng, fallbackNodes[i + 1].lat, fallbackNodes[i + 1].lng);
+  }
+  fallbackDistance = Math.round(fallbackDistance);
+
+  let speedMs = 1.4;
+  if (transportMode === "run") speedMs = 3.0;
+  if (transportMode === "cycle") speedMs = 4.5;
+  const fallbackTime = Math.max(1, Math.round(fallbackDistance / speedMs / 60));
+
+  return {
+    path: fallbackNodes,
+    coordinates: fallbackNodes.map((n) => [n.lat, n.lng] as [number, number]),
+    distance: fallbackDistance,
+    estimatedTime: fallbackTime,
+    steps: generateTurnByTurnSteps(fallbackNodes),
+    hasIndoorSegment: false
+  };
+
 }

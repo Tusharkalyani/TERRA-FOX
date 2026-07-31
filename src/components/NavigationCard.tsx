@@ -23,6 +23,9 @@ import type { CampusNode } from "../data/campusData";
 import type { PathResult, TransportMode, NavigationStep } from "../utils/pathfinder";
 import { getBuildingCategoryInfo } from "../utils/buildingIcons";
 
+import { getTranslation } from "../utils/translations";
+import type { LanguageCode } from "../utils/translations";
+
 interface NavigationCardProps {
   startId: string;
   endId: string;
@@ -35,7 +38,9 @@ interface NavigationCardProps {
   transportMode: TransportMode;
   onTransportModeChange: (mode: TransportMode) => void;
   onClearRoute: () => void;
+  currentLang?: LanguageCode;
 }
+
 
 export const NavigationCard: React.FC<NavigationCardProps> = ({
   startId,
@@ -48,8 +53,10 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
   onView3D,
   transportMode,
   onTransportModeChange,
-  onClearRoute
+  onClearRoute,
+  currentLang = "en"
 }) => {
+
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"route" | "directory">("route");
   const [showAllSteps, setShowAllSteps] = useState(false);
@@ -77,42 +84,44 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
   };
 
   return (
-    <div className="glass-panel w-full sm:w-[390px] rounded-3xl shadow-2xl p-5 border border-white/20 text-slate-800 dark:text-slate-100 flex flex-col max-h-[85vh] overflow-hidden transition-all duration-300">
+    <div className="glass-panel w-full sm:w-[390px] rounded-3xl shadow-2xl p-5 border border-slate-300/80 dark:border-slate-700/80 bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl text-slate-900 dark:text-white flex flex-col max-h-[85vh] overflow-hidden transition-all duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200/50 dark:border-slate-800/40">
+      <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center gap-2.5">
           <div className="bg-gradient-to-tr from-blue-600 to-indigo-500 text-white p-2 rounded-xl shadow-md shadow-blue-500/20">
             <Compass className="w-5 h-5 animate-spin-slow" />
           </div>
           <div>
-            <h1 className="font-extrabold text-lg leading-tight tracking-tight flex items-center gap-1.5">
-              Antigravity GPS
+            <h1 className="font-black text-lg leading-tight tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+              {getTranslation(currentLang || "en", "appTitle", "TERRA FOX")} GPS
             </h1>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-wider uppercase">Instant Destination Routing</p>
+            <p className="text-[10px] text-slate-700 dark:text-slate-300 font-extrabold tracking-wider uppercase">
+              {getTranslation(currentLang || "en", "subtitle", "VIT Bhopal Campus GPS")}
+            </p>
           </div>
         </div>
 
         {/* Tab switcher */}
-        <div className="flex bg-slate-200/60 dark:bg-slate-800/50 p-0.5 rounded-xl text-xs font-semibold">
+        <div className="flex bg-slate-200 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700">
           <button
             onClick={() => setActiveTab("route")}
-            className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg transition-all cursor-pointer font-black ${
               activeTab === "route"
-                ? "bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-white"
-                : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                : "text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-white"
             }`}
           >
-            Route
+            {getTranslation(currentLang || "en", "routeTab", "Route")}
           </button>
           <button
             onClick={() => setActiveTab("directory")}
-            className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg transition-all cursor-pointer font-black ${
               activeTab === "directory"
-                ? "bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-white"
-                : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                : "text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-white"
             }`}
           >
-            Directory
+            {getTranslation(currentLang || "en", "directoryTab", "Directory")}
           </button>
         </div>
       </div>
@@ -120,27 +129,29 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
       {activeTab === "route" ? (
         <div className="flex flex-col gap-4 overflow-y-auto hide-scrollbar flex-1 pr-0.5">
           {/* Routing Selectors */}
-          <div className="relative flex flex-col gap-2.5 bg-slate-50/70 dark:bg-slate-900/40 p-3.5 rounded-2xl border border-slate-200/60 dark:border-slate-800/50">
+          <div className="relative flex flex-col gap-3 bg-slate-100/90 dark:bg-slate-900/80 p-3.5 rounded-2xl border border-slate-300 dark:border-slate-700/80 shadow-sm">
             {/* Start point */}
             <div className="flex items-center gap-3">
               <div className="flex flex-col items-center">
-                <div className="w-6 h-6 rounded-full bg-emerald-500/15 border-2 border-emerald-500 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xs font-black shadow-sm">
+                <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-black shadow-md">
                   A
                 </div>
-                <div className="w-0.5 h-7 bg-slate-300 dark:bg-slate-700"></div>
+                <div className="w-0.5 h-8 bg-slate-400 dark:bg-slate-600"></div>
               </div>
-              <div className="flex-1">
-                <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-0.5">Start Point</label>
+              <div className="flex-1 min-w-0">
+                <label className="text-[10px] text-slate-700 dark:text-slate-300 font-black uppercase tracking-wider block mb-1">
+                  {getTranslation(currentLang || "en", "startPoint", "START POINT")}
+                </label>
                 <select
                   value={startId}
                   onChange={(e) => onStartChange(e.target.value)}
-                  className="w-full bg-transparent border-none text-slate-900 dark:text-slate-100 font-bold text-xs focus:outline-none focus:ring-0 p-0 cursor-pointer"
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-extrabold text-xs rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
                 >
-                  <option value="MY_LOCATION" className="dark:bg-slate-800 font-bold text-blue-500">
-                    📍 My Location (Current GPS)
+                  <option value="MY_LOCATION" className="dark:bg-slate-900 font-bold text-blue-600 dark:text-blue-400">
+                    📍 {getTranslation(currentLang || "en", "myLocation", "My Location (Current GPS)")}
                   </option>
                   {buildings.map((b) => (
-                    <option key={b.id} value={b.id} className="dark:bg-slate-800">
+                    <option key={b.id} value={b.id} className="dark:bg-slate-900">
                       {b.name} ({b.id})
                     </option>
                   ))}
@@ -151,30 +162,34 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
             {/* Swap Button */}
             <button
               onClick={onSwap}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-lg hover:border-blue-400 transition-all hover:scale-110 active:scale-90 cursor-pointer z-10"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-2 rounded-full bg-blue-600 text-white border-2 border-white dark:border-slate-800 shadow-lg hover:bg-blue-700 hover:scale-110 active:scale-90 transition-all cursor-pointer z-10"
               title="Swap Start & Destination"
             >
-              <ArrowRightLeft className="w-3.5 h-3.5 text-blue-500 rotate-90 sm:rotate-0" />
+              <ArrowRightLeft className="w-3.5 h-3.5 rotate-90 sm:rotate-0" />
             </button>
 
             {/* End point */}
             <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full bg-rose-500/15 border-2 border-rose-500 flex items-center justify-center text-rose-600 dark:text-rose-400 text-xs font-black shadow-sm">
+              <div className="w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs font-black shadow-md">
                 B
               </div>
-              <div className="flex-1">
-                <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-0.5">Destination</label>
+              <div className="flex-1 min-w-0">
+                <label className="text-[10px] text-slate-700 dark:text-slate-300 font-black uppercase tracking-wider block mb-1">
+                  {getTranslation(currentLang || "en", "destination", "DESTINATION")}
+                </label>
                 <select
                   value={endId}
                   onChange={(e) => onEndChange(e.target.value)}
-                  className="w-full bg-transparent border-none text-slate-900 dark:text-slate-100 font-bold text-xs focus:outline-none focus:ring-0 p-0 cursor-pointer"
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-extrabold text-xs rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
                 >
-                  <option value="" disabled className="dark:bg-slate-800">Select destination building...</option>
-                  <option value="MY_LOCATION" className="dark:bg-slate-800 font-bold text-blue-500">
-                    📍 My Location (Current GPS)
+                  <option value="" disabled className="dark:bg-slate-900">
+                    {getTranslation(currentLang || "en", "selectDestination", "Select Destination Building...")}
+                  </option>
+                  <option value="MY_LOCATION" className="dark:bg-slate-900 font-bold text-blue-600 dark:text-blue-400">
+                    📍 {getTranslation(currentLang || "en", "myLocation", "My Location (Current GPS)")}
                   </option>
                   {buildings.map((b) => (
-                    <option key={b.id} value={b.id} className="dark:bg-slate-800">
+                    <option key={b.id} value={b.id} className="dark:bg-slate-900">
                       {b.name} ({b.id})
                     </option>
                   ))}
@@ -184,39 +199,39 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
           </div>
 
           {/* Transport Mode Selector Pills */}
-          <div className="grid grid-cols-3 gap-2 bg-slate-100/60 dark:bg-slate-900/40 p-1 rounded-2xl border border-slate-200/50 dark:border-slate-800/40">
+          <div className="grid grid-cols-3 gap-2 bg-slate-200 dark:bg-slate-900/80 p-1.5 rounded-2xl border border-slate-300 dark:border-slate-700">
             <button
               onClick={() => onTransportModeChange("walk")}
-              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 py-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
                 transportMode === "walk"
-                  ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm"
-                  : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700"
               }`}
             >
               <Footprints className="w-3.5 h-3.5" />
-              <span>Walk</span>
+              <span>{getTranslation(currentLang || "en", "walk", "Walk")}</span>
             </button>
             <button
               onClick={() => onTransportModeChange("run")}
-              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 py-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
                 transportMode === "run"
-                  ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm"
-                  : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700"
               }`}
             >
               <Zap className="w-3.5 h-3.5" />
-              <span>Run</span>
+              <span>{getTranslation(currentLang || "en", "run", "Run")}</span>
             </button>
             <button
               onClick={() => onTransportModeChange("cycle")}
-              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 py-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
                 transportMode === "cycle"
-                  ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm"
-                  : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700"
               }`}
             >
               <Bike className="w-3.5 h-3.5" />
-              <span>Cycle</span>
+              <span>{getTranslation(currentLang || "en", "cycle", "Cycle")}</span>
             </button>
           </div>
 
@@ -225,42 +240,49 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
             <div className="flex flex-col gap-3 animate-fade-in">
               {/* Distance & Time Header */}
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-2xl p-3.5 flex flex-col justify-center">
-                  <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 mb-0.5">
-                    <Navigation className="w-4 h-4" />
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider">Distance</span>
+                <div className="bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 text-white border-2 border-blue-400/50 rounded-2xl p-3.5 flex flex-col justify-center shadow-lg shadow-blue-500/20">
+                  <div className="flex items-center gap-1.5 text-blue-100 mb-0.5 font-black">
+                    <Navigation className="w-4 h-4 text-white" />
+                    <span className="text-[10px] font-black uppercase tracking-wider text-blue-100">
+                      {getTranslation(currentLang || "en", "distance", "DISTANCE")}
+                    </span>
                   </div>
-                  <span className="text-xl font-black tracking-tight">
-                    {route.distance} <span className="text-xs font-bold text-slate-500">meters</span>
+                  <span className="text-2xl font-black tracking-tight text-white">
+                    {route.distance} <span className="text-xs font-black text-blue-100">{getTranslation(currentLang || "en", "meters", "meters")}</span>
                   </span>
                 </div>
 
-                <div className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-2xl p-3.5 flex flex-col justify-center">
-                  <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 mb-0.5">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider">Est. Time</span>
+                <div className="bg-gradient-to-br from-emerald-600 to-teal-600 dark:from-emerald-700 dark:to-teal-800 text-white border-2 border-emerald-400/50 rounded-2xl p-3.5 flex flex-col justify-center shadow-lg shadow-emerald-500/20">
+                  <div className="flex items-center gap-1.5 text-emerald-100 mb-0.5 font-black">
+                    <Clock className="w-4 h-4 text-white" />
+                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-100">
+                      {getTranslation(currentLang || "en", "estTime", "EST. TIME")}
+                    </span>
                   </div>
-                  <span className="text-xl font-black tracking-tight">
-                    {route.estimatedTime} <span className="text-xs font-bold text-slate-500">mins</span>
+                  <span className="text-2xl font-black tracking-tight text-white">
+                    {route.estimatedTime} <span className="text-xs font-black text-emerald-100">{getTranslation(currentLang || "en", "mins", "mins")}</span>
                   </span>
                 </div>
               </div>
 
+
               {/* Turn-by-Turn Steps Accordion */}
-              <div className="bg-slate-50/60 dark:bg-slate-900/40 p-3.5 rounded-2xl border border-slate-200/60 dark:border-slate-800/50">
+              <div className="bg-slate-100 dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-300 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-2.5">
-                  <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">Turn-by-Turn Directions</span>
+                  <span className="text-[10px] text-slate-800 dark:text-slate-200 font-black uppercase tracking-wider">
+                    {getTranslation(currentLang || "en", "turnByTurn", "Turn-by-Turn Directions")}
+                  </span>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setShowAllSteps(!showAllSteps)}
-                      className="text-[10px] text-blue-500 font-bold hover:underline flex items-center gap-0.5 cursor-pointer"
+                      className="text-[10px] text-blue-600 dark:text-blue-400 font-black hover:underline flex items-center gap-0.5 cursor-pointer"
                     >
-                      {showAllSteps ? "Collapse" : `View all ${route.steps.length} steps`}
+                      {showAllSteps ? getTranslation(currentLang || "en", "collapse", "Collapse") : `${getTranslation(currentLang || "en", "viewAllSteps", "View all")} (${route.steps.length})`}
                       {showAllSteps ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                     </button>
                     <button
                       onClick={onClearRoute}
-                      className="p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 hover:text-rose-500 transition-colors"
+                      className="p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 hover:text-rose-500 transition-colors"
                       title="Clear Route"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -272,16 +294,16 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
                 <div className="flex flex-col gap-2.5 relative pl-2">
                   {(showAllSteps ? route.steps : route.steps.slice(0, 3)).map((step, idx) => (
                     <div key={idx} className="flex items-start gap-2.5 text-xs">
-                      <div className="mt-0.5 p-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 shrink-0">
+                      <div className="mt-0.5 p-1 rounded-lg bg-slate-200 dark:bg-slate-800 shrink-0 border border-slate-300 dark:border-slate-700">
                         {getStepIcon(step)}
                       </div>
-                      <div className="flex-1">
-                        <p className="font-semibold text-slate-800 dark:text-slate-100 leading-snug">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-extrabold text-slate-900 dark:text-white leading-snug">
                           {step.instruction}
                         </p>
                         {step.distance > 0 && (
-                          <span className="text-[10px] font-bold text-slate-400">
-                            {step.distance} meters
+                          <span className="text-[10px] font-black text-blue-600 dark:text-blue-400">
+                            {step.distance} {getTranslation(currentLang || "en", "meters", "meters")}
                           </span>
                         )}
                       </div>
@@ -291,15 +313,16 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-50/50 dark:bg-slate-900/20 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800/50 px-4">
-              <Compass className="w-10 h-10 text-slate-300 dark:text-slate-700 mb-2 stroke-[1.5]" />
-              <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Click Any Building to Navigate</h3>
-              <p className="text-[11px] text-slate-400 max-w-[240px]">
+            <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-100 dark:bg-slate-900/40 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 px-4">
+              <Compass className="w-10 h-10 text-blue-500 mb-2 stroke-[1.5] animate-pulse" />
+              <h3 className="text-xs font-black text-slate-900 dark:text-white mb-1">Click Any Building to Navigate</h3>
+              <p className="text-[11px] font-extrabold text-slate-600 dark:text-slate-400 max-w-[240px]">
                 Click or hover over any building on the map or directory below to instantly set it as destination and route from <strong>My Location</strong>.
               </p>
             </div>
           )}
         </div>
+
       ) : (
         /* Directory Tab */
         <div className="flex flex-col flex-1 overflow-hidden">

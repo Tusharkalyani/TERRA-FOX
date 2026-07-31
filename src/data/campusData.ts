@@ -327,7 +327,17 @@ export const roadNodes: CampusNode[] = [
   { id: "N72", name: "", lat: 23.07293861988623,  lng: 76.85835596414528, isBuilding: false },
   { id: "N73", name: "", lat: 23.0749387881579,   lng: 76.85680611336156, isBuilding: false },
   { id: "N74", name: "", lat: 23.07489808958703,  lng: 76.85843996840121, isBuilding: false },
-  { id: "N75", name: "", lat: 23.074954430477604, lng: 76.85679961223389, isBuilding: false }
+  { id: "N75", name: "", lat: 23.074954430477604, lng: 76.85679961223389, isBuilding: false },
+
+  // AB2 Courtyard & Access Points
+  { id: "N76", name: "", lat: 23.07465501279135,  lng: 76.85492879338743, isBuilding: false },
+  { id: "N77", name: "", lat: 23.074425810735235, lng: 76.85493769102376, isBuilding: false },
+  { id: "N78", name: "", lat: 23.074278466350062, lng: 76.85515123429596, isBuilding: false },
+  { id: "N79", name: "", lat: 23.074303023758787, lng: 76.85520462011402, isBuilding: false },
+  { id: "N80", name: "", lat: 23.074262094741737, lng: 76.8549198957511,  isBuilding: false },
+  { id: "N81", name: "", lat: 23.07424572313143,  lng: 76.85581855702156, isBuilding: false },
+  { id: "N82", name: "", lat: 23.074098378548943, lng: 76.85492879338743, isBuilding: false },
+  { id: "N83", name: "", lat: 23.07427028054615,  lng: 76.85503556502353, isBuilding: false }
 ];
 
 export const campusNodes: CampusNode[] = [...buildings, ...roadNodes];
@@ -356,9 +366,26 @@ export const campusEdges: CampusEdge[] = [
   { from: "GH2", to: "N26" },
   { from: "SPECIAL", to: "N64" },
   { from: "SPECIAL", to: "N65" },
+  { from: "AB2", to: "N78" },
+  { from: "AB2", to: "N79" },
+  { from: "AB2", to: "N81" },
+  { from: "AB2", to: "N83" },
   { from: "AB2", to: "N27" },
   { from: "AB2", to: "N28" },
   { from: "AB2", to: "N47" },
+
+  // AB2 Courtyard Connections
+  { from: "N46", to: "N76" },
+  { from: "N76", to: "N77" },
+  { from: "N77", to: "N80" },
+  { from: "N80", to: "N82" },
+  { from: "N82", to: "N27" },
+  { from: "N77", to: "N83" },
+  { from: "N83", to: "N78" },
+  { from: "N78", to: "N79" },
+  { from: "N79", to: "N47" },
+  { from: "N47", to: "N81" },
+
   { from: "CRICKET GROUND", to: "N20" },
   { from: "CRICKET GROUND", to: "N24" },
   { from: "GROUND", to: "N41" },
@@ -412,12 +439,17 @@ export const campusEdges: CampusEdge[] = [
   { from: "N20", to: "N21" },
   { from: "N21", to: "N22" },
 
-  // Girls Hostel Loop
+  // Girls Hostel Loop & Detours
   { from: "N20", to: "N23" },
   { from: "N23", to: "N24" },
   { from: "N24", to: "N26" },
   { from: "N26", to: "N25" },
   { from: "N25", to: "N21" },
+  { from: "N25", to: "N50" },
+  { from: "N24", to: "N50" },
+  { from: "N19", to: "N46" },
+  { from: "N18", to: "N27" },
+
 
   // AB2 Area
   { from: "N21", to: "N46" },

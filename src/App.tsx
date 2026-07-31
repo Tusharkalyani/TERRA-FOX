@@ -4,9 +4,15 @@ import { NavigationCard } from "./components/NavigationCard";
 import { WeatherWidget } from "./components/WeatherWidget";
 import { DynamicIsland } from "./components/DynamicIsland";
 import { Building3DViewer } from "./components/Building3DViewer";
+import { DisruptionsPanel } from "./components/DisruptionsPanel";
+import { GlobalSearchBar } from "./components/GlobalSearchBar";
+import { LanguagePicker } from "./components/LanguagePicker";
 import { findShortestPath } from "./utils/pathfinder";
 import type { PathResult, TransportMode } from "./utils/pathfinder";
 import type { CampusNode } from "./data/campusData";
+import { initialDisruptions } from "./data/disruptionsData";
+import type { CampusDisruption } from "./data/disruptionsData";
+import type { LanguageCode } from "./utils/translations";
 import { Sun, Moon } from "lucide-react";
 
 function App() {
@@ -16,6 +22,8 @@ function App() {
   const [viewerBuilding, setViewerBuilding] = useState<CampusNode | null>(null);
   const [route, setRoute] = useState<PathResult | null>(null);
   const [transportMode, setTransportMode] = useState<TransportMode>("walk");
+  const [disruptions, setDisruptions] = useState<CampusDisruption[]>(initialDisruptions);
+  const [currentLang, setCurrentLang] = useState<LanguageCode>("en");
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
@@ -58,15 +66,20 @@ function App() {
     }
   }, [isDarkMode]);
 
-  // Recalculate route when start, destination, userLocation, or transportMode changes
+  // Active blocked node IDs for A* path avoidance
+  const blockedNodeIds = disruptions
+    .filter((d) => d.active)
+    .flatMap((d) => d.affectedNodeIds);
+
+  // Recalculate route when start, destination, userLocation, transportMode, or disruptions change
   useEffect(() => {
     if (startId && endId) {
-      const shortestPath = findShortestPath(startId, endId, userLocation, transportMode);
+      const shortestPath = findShortestPath(startId, endId, userLocation, transportMode, blockedNodeIds);
       setRoute(shortestPath);
     } else {
       setRoute(null);
     }
-  }, [startId, endId, userLocation, transportMode]);
+  }, [startId, endId, userLocation, transportMode, disruptions]);
 
   const handleStartChange = (id: string) => {
     setStartId(id);
@@ -100,7 +113,7 @@ function App() {
   const handleLocationFound = (coords: [number, number], _isMock: boolean) => {
     setUserLocation(coords);
     if (startId === "MY_LOCATION" || endId === "MY_LOCATION") {
-      const path = findShortestPath(startId, endId, coords, transportMode);
+      const path = findShortestPath(startId, endId, coords, transportMode, blockedNodeIds);
       setRoute(path);
     }
   };
@@ -108,6 +121,16 @@ function App() {
   const handleClearRoute = () => {
     setEndId("");
     setRoute(null);
+  };
+
+  const handleToggleDisruption = (id: string) => {
+    setDisruptions((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, active: !item.active } : item))
+    );
+  };
+
+  const handleAddDisruption = (newItem: CampusDisruption) => {
+    setDisruptions((prev) => [newItem, ...prev]);
   };
 
   return (
@@ -124,6 +147,7 @@ function App() {
           isDarkMode={isDarkMode}
           userLocation={userLocation}
           onLocationFound={handleLocationFound}
+          disruptions={disruptions}
         />
       </div>
 
@@ -132,25 +156,53 @@ function App() {
 
       {/* Floating UI Elements Overlay */}
       <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-4 sm:p-6">
-        {/* Top bar (Brand, Weather & Dark Mode Switch) */}
+        {/* Top bar (Brand & Search on Left, Alerts, Language & Weather on Right) */}
         <div className="w-full flex justify-between items-center gap-3 pointer-events-auto">
-          {/* Brand Mark */}
-          <div className="glass-panel px-3.5 py-2 rounded-2xl shadow-xl border border-white/20 flex items-center gap-2.5 backdrop-blur-xl transition-transform hover:scale-102">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 text-white flex items-center justify-center font-black text-xs shadow-md shadow-blue-500/30">
-              TF
+          {/* Left Group (Brand & Search) */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Brand Mark */}
+            <div className="glass-panel px-3.5 py-2 rounded-2xl shadow-xl border border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 flex items-center gap-2.5 backdrop-blur-xl transition-transform hover:scale-102 shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 text-white flex items-center justify-center font-black text-xs shadow-md shadow-blue-500/30">
+                TF
+              </div>
+              <div className="flex flex-col">
+                <h1 className="font-black text-xs tracking-tight text-slate-900 dark:text-white leading-none">
+                  TERRA FOX
+                </h1>
+                <p className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mt-0.5">
+                  VIT BHOPAL CAMPUS GPS
+                </p>
+              </div>
             </div>
-            <div className="hidden sm:block">
-              <h1 className="font-extrabold text-xs tracking-tight text-slate-900 dark:text-white leading-none">
-                TERRA FOX
-              </h1>
-              <p className="text-[9px] font-extrabold text-blue-500 dark:text-blue-400 uppercase tracking-widest mt-0.5">
-                VIT Bhopal Campus GPS
-              </p>
-            </div>
+
+
+            {/* Global Search Bar */}
+            <GlobalSearchBar
+              onSelectBuilding={(building) => setSelectedBuilding(building)}
+              onRouteToBuilding={(building) => {
+                setEndId(building.id);
+                setStartId("MY_LOCATION");
+                setSelectedBuilding(building);
+              }}
+              onView3D={(building) => setViewerBuilding(building)}
+            />
           </div>
 
           {/* Right Action Controls */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <LanguagePicker
+              currentLang={currentLang}
+              onLanguageChange={setCurrentLang}
+            />
+            <DisruptionsPanel
+              disruptions={disruptions}
+              onToggleDisruption={handleToggleDisruption}
+              onSelectDestination={(buildingId) => {
+                setEndId(buildingId);
+                setStartId("MY_LOCATION");
+              }}
+              onAddDisruption={handleAddDisruption}
+            />
             <WeatherWidget />
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
@@ -165,6 +217,10 @@ function App() {
             </button>
           </div>
         </div>
+
+
+
+
 
 
         {/* Main routing card placement (floating on bottom-left) */}
@@ -182,7 +238,9 @@ function App() {
               transportMode={transportMode}
               onTransportModeChange={setTransportMode}
               onClearRoute={handleClearRoute}
+              currentLang={currentLang}
             />
+
           </div>
         </div>
       </div>
