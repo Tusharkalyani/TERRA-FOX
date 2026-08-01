@@ -22,9 +22,13 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ route, transportMo
   };
 
   return (
-    <div className="absolute bottom-24 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-500 w-[calc(100vw-100px)] sm:w-auto max-w-[90vw]">
+    <div
+      className="fixed z-50 pointer-events-none transition-all duration-500
+                 bottom-20 left-4 sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2"
+      style={{ maxWidth: "calc(100vw - 80px)" }}
+    >
       <div
-        className={`dynamic-island-bounce flex items-center gap-2.5 sm:gap-3.5 bg-slate-950/90 dark:bg-slate-900/90 backdrop-blur-xl text-white border border-white/15 shadow-2xl px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full select-none justify-center sm:justify-start ${
+        className={`dynamic-island-bounce flex items-center gap-2.5 sm:gap-3.5 bg-slate-950/90 dark:bg-slate-900/90 backdrop-blur-xl text-white border border-white/15 shadow-2xl px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full select-none ${
           isVisible
             ? "translate-y-0 opacity-100 scale-100 pointer-events-auto"
             : "translate-y-24 opacity-0 scale-90 pointer-events-none"
@@ -46,7 +50,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ route, transportMo
               <span className="text-slate-500 shrink-0">|</span>
               <div className="flex items-center gap-1 sm:gap-1.5 text-white font-extrabold text-xs min-w-0">
                 <Compass className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C7D3C0] shrink-0" />
-                <span className="truncate max-w-[120px] sm:max-w-[320px]">{currentInstruction}</span>
+                <span className="truncate max-w-[100px] sm:max-w-[320px]">{currentInstruction}</span>
               </div>
             </>
           )}
@@ -59,4 +63,5 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ route, transportMo
     </div>
   );
 };
+
 

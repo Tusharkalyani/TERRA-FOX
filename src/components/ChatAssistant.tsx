@@ -229,10 +229,10 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({
       {/* Expanded Chat Drawer Container */}
       {isOpen && (
         <div
-          className={`mb-3.5 transition-all duration-300 transform origin-bottom-right flex flex-col bg-slate-900/95 dark:bg-slate-950/95 border border-slate-700/80 shadow-2xl backdrop-blur-2xl overflow-hidden ${
+          className={`mb-3 transition-all duration-300 flex flex-col bg-slate-900/95 dark:bg-slate-950/95 border border-slate-700/80 shadow-2xl backdrop-blur-2xl overflow-hidden ${
             isExpanded
               ? "fixed inset-x-0 bottom-0 h-[85vh] rounded-t-3xl sm:relative sm:inset-auto sm:w-[500px] sm:h-[620px] sm:rounded-3xl"
-              : "w-[92vw] sm:w-[380px] h-[72vh] sm:h-[500px] rounded-t-3xl sm:rounded-3xl"
+              : "w-[88vw] sm:w-[380px] h-[68vh] sm:h-[500px] rounded-t-3xl sm:rounded-3xl"
           }`}
         >
           {/* Chat Header */}

@@ -245,8 +245,7 @@ function App() {
 
       {/* ══════════════════════════════════
           MOBILE: Floating Action Button (Navigate)
-          Shown below sm breakpoint only
-          Fixed position so it always stays visible on Android
+          Fixed at bottom-left, same tier as chat button at bottom-right
           ══════════════════════════════════ */}
       <div
         className="sm:hidden fixed left-4 z-30 pointer-events-auto"
