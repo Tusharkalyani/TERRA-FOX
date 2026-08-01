@@ -32,12 +32,32 @@ html, body, #root {
   /* Prevent overscroll bounce on iOS */
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
+  /* Remove grey tap flash on Android */
+  -webkit-tap-highlight-color: transparent;
+  /* Prevent text selection on long-press (Android) */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Re-enable text selection for inputs and text areas */
+input, textarea, select, [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+  /* Disable 300ms tap delay on Android */
+  touch-action: manipulation;
+}
+
+/* Ensure all buttons & interactive elements get manipulation touch-action */
+button, a, [role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html.dark, html.dark body, html.dark #root {
   background-color: #161d18;
   color: #F7F4ED;
 }
+
 
 /* Custom scrollbars */
 .hide-scrollbar::-webkit-scrollbar {

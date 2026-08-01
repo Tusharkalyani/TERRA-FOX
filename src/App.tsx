@@ -246,14 +246,23 @@ function App() {
       {/* ══════════════════════════════════
           MOBILE: Floating Action Button (Navigate)
           Shown below sm breakpoint only
+          Fixed position so it always stays visible on Android
           ══════════════════════════════════ */}
-      <div className="sm:hidden absolute bottom-6 left-4 z-20 pointer-events-auto">
+      <div
+        className="sm:hidden fixed left-4 z-30 pointer-events-auto"
+        style={{ bottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}
+      >
         <button
           onClick={() => setMobileNavOpen(true)}
-          className="flex items-center gap-2 px-4 py-3 bg-[#8FA28A] text-white rounded-2xl shadow-2xl shadow-[#8FA28A]/40 active:scale-95 transition-all border-2 border-white/20 backdrop-blur-xl"
+          style={{
+            touchAction: "manipulation",
+            WebkitTapHighlightColor: "transparent",
+            userSelect: "none",
+          }}
+          className="flex items-center gap-2 px-4 py-3 bg-[#8FA28A] text-white rounded-2xl shadow-2xl shadow-[#8FA28A]/40 active:scale-95 transition-transform border-2 border-white/20"
           title="Open Navigation"
         >
-          <NavIcon className="w-5 h-5 fill-current" />
+          <NavIcon className="w-5 h-5 fill-current shrink-0" />
           <span className="font-extrabold text-sm tracking-tight">Navigate</span>
           {route && (
             <span className="bg-white/20 text-white text-xs font-black px-2 py-0.5 rounded-full">
@@ -268,9 +277,8 @@ function App() {
           ══════════════════════════════════ */}
       {mobileNavOpen && (
         <div className="sm:hidden fixed inset-0 z-40 flex flex-col justify-end pointer-events-auto">
-          {/* Semi-transparent backdrop */}
-          <div
-            className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+        <div
+            className="absolute inset-0 bg-slate-950/60"
             onClick={() => setMobileNavOpen(false)}
           />
           {/* Animated drawer panel */}
