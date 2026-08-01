@@ -225,14 +225,14 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 pointer-events-auto flex flex-col items-end">
+    <div className="fixed bottom-6 right-4 sm:bottom-5 sm:right-5 z-50 pointer-events-auto flex flex-col items-end">
       {/* Expanded Chat Drawer Container */}
       {isOpen && (
         <div
-          className={`mb-3.5 transition-all duration-300 transform origin-bottom-right flex flex-col bg-slate-900/95 dark:bg-slate-950/95 border border-slate-700/80 rounded-3xl shadow-2xl backdrop-blur-2xl overflow-hidden ${
+          className={`mb-3.5 transition-all duration-300 transform origin-bottom-right flex flex-col bg-slate-900/95 dark:bg-slate-950/95 border border-slate-700/80 shadow-2xl backdrop-blur-2xl overflow-hidden ${
             isExpanded
-              ? "w-[92vw] sm:w-[500px] h-[80vh] sm:h-[620px]"
-              : "w-[88vw] sm:w-[380px] h-[500px]"
+              ? "fixed inset-x-0 bottom-0 h-[85vh] rounded-t-3xl sm:relative sm:inset-auto sm:w-[500px] sm:h-[620px] sm:rounded-3xl"
+              : "w-[92vw] sm:w-[380px] h-[72vh] sm:h-[500px] rounded-t-3xl sm:rounded-3xl"
           }`}
         >
           {/* Chat Header */}
@@ -447,7 +447,7 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({
           setIsOpen(!isOpen);
           setHasUnread(false);
         }}
-        className="relative group flex items-center justify-center w-12 h-12 sm:w-13 sm:h-13 bg-slate-900/95 dark:bg-slate-950/95 text-white rounded-2xl shadow-2xl shadow-slate-950/80 hover:scale-108 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-rose-500/60 backdrop-blur-xl"
+        className="relative group flex items-center justify-center w-12 h-12 bg-slate-900/95 dark:bg-slate-950/95 text-white rounded-2xl shadow-2xl shadow-slate-950/80 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-rose-500/60 backdrop-blur-xl"
         title="Open TERRA-FOX AI Assistant"
       >
         {/* Animated Glow Ring */}

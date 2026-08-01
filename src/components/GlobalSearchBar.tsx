@@ -121,7 +121,7 @@ export const GlobalSearchBar: React.FC<GlobalSearchBarProps> = ({
 
       {/* Auto-complete Dropdown Panel */}
       {isOpen && query.trim().length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 min-w-[280px] sm:min-w-[320px] bg-slate-900/95 text-white rounded-3xl shadow-2xl border border-white/15 overflow-hidden max-h-[380px] overflow-y-auto hide-scrollbar z-50 backdrop-blur-2xl animate-fade-in p-2 flex flex-col gap-1">
+        <div className="absolute top-full left-0 right-0 mt-2 w-full max-w-[calc(100vw-1rem)] sm:min-w-[320px] bg-slate-900/95 text-white rounded-3xl shadow-2xl border border-white/15 overflow-hidden max-h-[50vh] sm:max-h-[380px] overflow-y-auto hide-scrollbar z-50 backdrop-blur-2xl animate-fade-in p-2 flex flex-col gap-1">
 
           {filtered.length > 0 ? (
             filtered.map((item, idx) => {

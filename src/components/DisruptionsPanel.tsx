@@ -83,7 +83,8 @@ export const DisruptionsPanel: React.FC<DisruptionsPanelProps> = ({
       {/* Floating Trigger Button on Top Bar */}
       <button
         onClick={() => setIsOpen(true)}
-        className="glass-panel px-3 py-1.5 rounded-2xl shadow-lg border border-white/20 text-slate-800 dark:text-slate-100 flex items-center gap-2 hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto"
+        className="glass-panel px-2 sm:px-3 py-1.5 rounded-xl sm:rounded-2xl shadow-lg border border-white/20 text-slate-800 dark:text-slate-100 flex items-center gap-1.5 sm:gap-2 hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto"
+        style={{ minHeight: 36 }}
         title="Live Campus Disruptions & Room Relocations"
       >
         <div className="relative flex items-center justify-center">
@@ -92,9 +93,15 @@ export const DisruptionsPanel: React.FC<DisruptionsPanelProps> = ({
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full animate-ping" />
           )}
         </div>
-        <span className="text-xs font-black tracking-tight">
+        <span className="hidden sm:inline text-xs font-black tracking-tight">
           Alerts ({activeDisruptions.length})
         </span>
+        {/* Mobile-only: show count badge instead of text */}
+        {activeDisruptions.length > 0 && (
+          <span className="sm:hidden text-[10px] font-black bg-rose-500 text-white px-1.5 py-0.5 rounded-full leading-none">
+            {activeDisruptions.length}
+          </span>
+        )}
       </button>
 
       {/* Modal Hub */}

@@ -21,7 +21,7 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
   const IconComp = category.IconComponent;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-8 animate-fade-in">
+    <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 sm:p-8 animate-fade-in">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl cursor-pointer transition-opacity"
@@ -29,7 +29,7 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
       />
       
       {/* Modal Container */}
-      <div className="relative w-full max-w-4xl h-[85vh] bg-slate-900 text-white rounded-[2.5rem] shadow-2xl border border-white/15 overflow-hidden flex flex-col pointer-events-auto z-10">
+      <div className="relative w-full max-w-4xl h-[92vh] sm:h-[85vh] bg-slate-900 text-white rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl border border-white/15 overflow-hidden flex flex-col pointer-events-auto z-10">
         
         {/* Header Bar */}
         <div className="p-6 border-b border-white/10 flex items-center justify-between bg-slate-900/90 backdrop-blur-md z-20">
@@ -59,13 +59,13 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
                   onClose();
                   if (onOpenIndoorNav) onOpenIndoorNav(building.id as "AB1" | "AB2");
                 }}
-                className="px-3.5 py-2 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-extrabold text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer"
+                className="px-2.5 sm:px-3.5 py-2 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-extrabold text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer"
               >
-                🗺️ Indoor Floorplan Nav
+                🗺️ <span className="hidden sm:inline">Indoor Floorplan Nav</span><span className="sm:hidden">Indoor</span>
               </button>
             )}
 
-            {/* View Mode Switcher */}
+            {/* View Mode Switcher — hidden on mobile (shown below header instead) */}
             <div className="hidden sm:flex bg-slate-800/80 p-1 rounded-xl text-xs font-semibold border border-white/10">
               <button
                 onClick={() => setActiveTab("isometric")}
@@ -101,12 +101,29 @@ export const Building3DViewer: React.FC<Building3DViewerProps> = ({
 
             <button 
               onClick={onClose}
-              className="p-3 bg-slate-800 hover:bg-slate-700 rounded-2xl text-slate-300 hover:text-white transition-all shadow-lg border border-white/10 cursor-pointer"
+              className="p-2.5 sm:p-3 bg-slate-800 hover:bg-slate-700 rounded-2xl text-slate-300 hover:text-white transition-all shadow-lg border border-white/10 cursor-pointer"
               title="Close View"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
+        </div>
+
+        {/* Mobile-only Tab Row (visible below header on small screens) */}
+        <div className="sm:hidden flex bg-slate-800/80 border-b border-white/10 text-xs font-semibold overflow-x-auto hide-scrollbar">
+          {(["isometric", "blueprint", "details"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 min-w-[90px] py-2.5 px-3 transition-all capitalize ${
+                activeTab === tab
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              {tab === "isometric" ? "3D View" : tab === "blueprint" ? "Blueprint" : "Specs"}
+            </button>
+          ))}
         </div>
 
         {/* Content View */}

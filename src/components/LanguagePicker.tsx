@@ -32,7 +32,8 @@ export const LanguagePicker: React.FC<LanguagePickerProps> = ({
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="glass-panel px-2.5 py-1.5 rounded-2xl shadow-lg border border-slate-300/80 dark:border-slate-700/80 text-slate-800 dark:text-slate-100 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer bg-white/90 dark:bg-slate-900/90"
+        className="glass-panel px-2 sm:px-2.5 py-1.5 rounded-xl sm:rounded-2xl shadow-lg border border-slate-300/80 dark:border-slate-700/80 text-slate-800 dark:text-slate-100 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer bg-white/90 dark:bg-slate-900/90"
+        style={{ minHeight: 36 }}
         title="Select Language / भाषा चुनें"
       >
         <span className="text-sm">{selectedOption.flag}</span>

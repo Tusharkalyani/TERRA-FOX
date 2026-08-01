@@ -93,10 +93,11 @@ export const WeatherWidget: React.FC = () => {
     <button
       onClick={() => !refreshing && fetchWeather(true)}
       disabled={loading}
-      className="glass-panel px-3 py-1.5 rounded-2xl shadow-md border border-white/20 dark:border-white/10 text-slate-800 dark:text-slate-100 flex items-center gap-2 select-none hover:scale-[1.03] active:scale-95 transition-all cursor-pointer group pointer-events-auto"
+      className="glass-panel px-2 sm:px-3 py-1.5 rounded-xl sm:rounded-2xl shadow-md border border-white/20 dark:border-white/10 text-slate-800 dark:text-slate-100 flex items-center gap-1.5 sm:gap-2 select-none hover:scale-[1.03] active:scale-95 transition-all cursor-pointer group pointer-events-auto"
+      style={{ minHeight: 36 }}
       title={weather.temp !== null ? `Live Weather at Campus (Sehore): ${weather.status} (${weather.temp}°C). Click to refresh.` : "Loading weather..."}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <span className={`text-base leading-none transition-transform duration-300 group-hover:scale-110 ${refreshing || loading ? "animate-pulse" : ""}`}>
           {weather.emoji}
         </span>
@@ -104,13 +105,14 @@ export const WeatherWidget: React.FC = () => {
           <span className="font-extrabold text-[11px] tracking-tight">
             {weather.temp !== null ? `${weather.temp}°C` : "--°C"}
           </span>
-          <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+          <span className="hidden sm:block text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
             {weather.status}
           </span>
         </div>
       </div>
-      <div className="w-px h-4.5 bg-slate-200 dark:bg-slate-800/80 mx-0.5" />
-      <RefreshCw className={`w-3 h-3 text-slate-400 dark:text-slate-500 group-hover:text-[#8FA28A] dark:group-hover:text-[#C7D3C0] transition-all duration-300 ${refreshing ? "animate-spin text-[#8FA28A]" : "group-hover:rotate-45"}`} />
+      <div className="hidden sm:block w-px h-4.5 bg-slate-200 dark:bg-slate-800/80 mx-0.5" />
+      <RefreshCw className={`hidden sm:block w-3 h-3 text-slate-400 dark:text-slate-500 group-hover:text-[#8FA28A] dark:group-hover:text-[#C7D3C0] transition-all duration-300 ${refreshing ? "animate-spin text-[#8FA28A]" : "group-hover:rotate-45"}`} />
     </button>
   );
 };
+

@@ -86,7 +86,7 @@ export const NavigationCard: React.FC<NavigationCardProps> = ({
   };
 
   return (
-    <div className="glass-panel w-full sm:w-[390px] rounded-3xl shadow-2xl p-5 border border-slate-300/80 dark:border-slate-700/80 bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl text-slate-900 dark:text-white flex flex-col max-h-[85vh] overflow-hidden transition-all duration-300">
+    <div className="glass-panel w-full sm:w-[390px] rounded-t-3xl sm:rounded-3xl shadow-2xl p-4 sm:p-5 border border-slate-300/80 dark:border-slate-700/80 bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl text-slate-900 dark:text-white flex flex-col max-h-[80vh] sm:max-h-[85vh] overflow-hidden transition-all duration-300">
       {/* Header */}
       <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center gap-2.5">

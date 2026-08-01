@@ -159,7 +159,7 @@ export const IndoorNavigationModal: React.FC<IndoorNavigationModalProps> = ({
   const indoorSteps = aStarResult?.steps || [];
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 animate-fade-in">
+    <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-3 sm:p-6 animate-fade-in">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-slate-950/85 backdrop-blur-xl cursor-pointer"
@@ -167,7 +167,7 @@ export const IndoorNavigationModal: React.FC<IndoorNavigationModalProps> = ({
       />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-5xl h-[90vh] sm:h-[85vh] bg-slate-900 text-white rounded-[2.5rem] shadow-2xl border border-slate-700/80 overflow-hidden flex flex-col pointer-events-auto z-10">
+      <div className="relative w-full max-w-5xl h-[95vh] sm:h-[85vh] bg-slate-900 text-white rounded-t-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-700/80 overflow-hidden flex flex-col pointer-events-auto z-10">
         
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-slate-800 bg-gradient-to-r from-slate-900 via-rose-950/30 to-slate-900 flex flex-wrap items-center justify-between gap-3 shrink-0">
@@ -281,19 +281,19 @@ export const IndoorNavigationModal: React.FC<IndoorNavigationModalProps> = ({
           </div>
 
           {/* Floor Selection Buttons (Floor 1, 2, 3, 4) */}
-          <div className="flex items-center gap-1.5 bg-slate-900 p-1.5 rounded-2xl border border-slate-800">
+          <div className="flex items-center gap-1 bg-slate-900 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl border border-slate-800 flex-wrap">
             <span className="text-[10px] font-extrabold text-slate-400 uppercase px-1">Floor:</span>
             {[1, 2, 3, 4].map((fl) => (
               <button
                 key={fl}
                 onClick={() => setSelectedFloor(fl)}
-                className={`px-3 py-1 text-xs font-extrabold rounded-xl transition-all cursor-pointer ${
+                className={`px-2 sm:px-3 py-1 text-xs font-extrabold rounded-lg sm:rounded-xl transition-all cursor-pointer ${
                   selectedFloor === fl
                     ? "bg-rose-500 text-white shadow-md shadow-rose-900/50 scale-105"
                     : "text-slate-400 hover:text-white hover:bg-slate-800"
                 }`}
               >
-                Floor {fl} ({fl * 100}s)
+                <span className="hidden sm:inline">Floor </span>{fl}
               </button>
             ))}
           </div>
@@ -427,7 +427,7 @@ export const IndoorNavigationModal: React.FC<IndoorNavigationModalProps> = ({
           </div>
 
           {/* Turn-by-Turn Indoor Directions Sidebar */}
-          <div className="w-full md:w-80 bg-slate-900 border-t md:border-t-0 md:border-l border-slate-800 p-4 flex flex-col justify-between shrink-0 overflow-y-auto">
+          <div className="w-full md:w-80 bg-slate-900 border-t md:border-t-0 md:border-l border-slate-800 p-3 sm:p-4 flex flex-col justify-between shrink-0 overflow-y-auto max-h-[200px] md:max-h-none">
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[10px] font-black uppercase tracking-wider text-rose-400 flex items-center gap-1">
